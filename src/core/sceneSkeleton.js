@@ -1,0 +1,5 @@
+class SceneSkeleton {
+
+}
+
+export {SceneSkeleton};

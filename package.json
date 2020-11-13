@@ -1,9 +1,11 @@
 {
   "name": "oro",
   "version": "0.0.1",
-  "description": "Game Engine built with THREE.JS",
-  "main": "index.js",
+  "description": "Game Engine using THREE.JS",
+  "main": "./build/ORO.js",
+  "type": "module",
   "scripts": {
+    "build": "rollup ./src/ORO.js --file ./build/ORO.js --format cjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
