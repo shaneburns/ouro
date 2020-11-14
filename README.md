@@ -1,2 +1,2 @@
-# oro
-Game engine utilizing THREE.JS
+# OURO 
+Web based game engine utilizing THREE.JS
