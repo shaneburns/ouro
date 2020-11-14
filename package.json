@@ -1,8 +1,8 @@
 {
-  "name": "exolvuntur-engine",
-  "version": "0.0.1",
+  "name": "ouro-engine",
+  "version": "0.0.1a",
   "description": "Game Engine using THREE.JS",
-  "main": "./build/index.js",
+  "main": "./build/OURO.js",
   "dependencies": {
     "three": "^0.122.0",
     "stats-js": "^1.0.1"
