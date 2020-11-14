@@ -1,0 +1,77 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'publish', '--no-cache' ]
+2 info using npm@6.14.4
+3 info using node@v10.19.0
+4 verbose npm-session ba6eb8b6f3a7167d
+5 verbose publish [ '.' ]
+6 info lifecycle oro@0.0.1~prepublish: oro@0.0.1
+7 info lifecycle oro@0.0.1~prepare: oro@0.0.1
+8 info lifecycle oro@0.0.1~prepublishOnly: oro@0.0.1
+9 info lifecycle oro@0.0.1~prepack: oro@0.0.1
+10 info lifecycle oro@0.0.1~postpack: oro@0.0.1
+11 notice
+12 notice 📦  oro@0.0.1
+13 notice === Tarball Contents ===
+14 notice 5.7kB   OLD/shaders/ashimaCode/classicnoise3D.glsl
+14 notice 1.4kB   OLD/shaders/core/shaderChunk.glsl
+14 notice 11.6kB  OLD/game/props/autoAnimObj.js
+14 notice 1.1kB   OLD/game/chambers/block0.js
+14 notice 3.4kB   OLD/game/controls/controls.js
+14 notice 1.6kB   OLD/game/props/core.js
+14 notice 3.4kB   src/core/creation.js
+14 notice 1.7kB   OLD/game/models/cube.js
+14 notice 348B    OLD/game/props/cube.js
+14 notice 3.8kB   OLD/game/props/cubeMatrix.js
+14 notice 142B    OLD/game/props/darkCore.js
+14 notice 1.6kB   OLD/game/chambers/darkForest.js
+14 notice 1.8kB   src/core/episodeManager.js
+14 notice 617B    src/core/episodeSkeleton.js
+14 notice 235B    index.js
+14 notice 2.1kB   OLD/game/models/laht.js
+14 notice 49B     src/core/menuManager.js
+14 notice 2.4kB   OLD/mg.js
+14 notice 11.4kB  OLD/game/MTLLoader.js
+14 notice 20.0kB  OLD/game/OBJLoader.js
+14 notice 7.6kB   build/ORO.js
+14 notice 338B    src/ORO.js
+14 notice 1.0kB   OLD/game/props/particles/particle.js
+14 notice 9.7kB   OLD/patch.js
+14 notice 5.1kB   OLD/game/player.js
+14 notice 1.6kB   OLD/game/controls/pointerLockControls.js
+14 notice 760B    OLD/game/props/pyramid.js
+14 notice 449B    src/core/sceneManager.js
+14 notice 2.0kB   OLD/game/scenes/sceneSetup.js
+14 notice 1.2kB   src/core/sceneSkeleton.js
+14 notice 285B    OLD/game/props/sphere.js
+14 notice 6.7kB   OLD/game/props/particles/system.js
+14 notice 1.1kB   OLD/game/scenes/TestChamberBlock0.js
+14 notice 545.5kB OLD/three.min.js
+14 notice 1.2kB   OLD/utils.js
+14 notice 614B    OLD/shaders/New_Composed_Shader.json
+14 notice 629B    package.json
+14 notice 39B     README.md
+15 notice === Tarball Details ===
+16 notice name:          oro
+16 notice version:       0.0.1
+16 notice package size:  165.1 kB
+16 notice unpacked size: 660.1 kB
+16 notice shasum:        16bc3200f4e1608975c41de8c998959b1cd94a7d
+16 notice integrity:     sha512-uI92pcklxgUJm[...]SAxpAODHDoEuA==
+16 notice total files:   38
+17 notice
+18 http fetch PUT 403 https://registry.npmjs.org/oro 806ms
+19 verbose stack Error: 403 Forbidden - PUT https://registry.npmjs.org/oro - You do not have permission to publish "oro". Are you logged in as the correct user?
+19 verbose stack     at res.buffer.catch.then.body (/usr/share/npm/node_modules/npm-registry-fetch/check-response.js:104:15)
+19 verbose stack     at process._tickCallback (internal/process/next_tick.js:68:7)
+20 verbose statusCode 403
+21 verbose pkgid oro@0.0.1
+22 verbose cwd /mnt/c/wamp/www/oro
+23 verbose Linux 4.19.128-microsoft-standard
+24 verbose argv "/usr/bin/node" "/usr/bin/npm" "publish" "--no-cache"
+25 verbose node v10.19.0
+26 verbose npm  v6.14.4
+27 error code E403
+28 error 403 403 Forbidden - PUT https://registry.npmjs.org/oro - You do not have permission to publish "oro". Are you logged in as the correct user?
+29 error 403 In most cases, you or one of your dependencies are requesting
+29 error 403 a package version that is forbidden by your security policy.
+30 verbose exit [ 1, true ]

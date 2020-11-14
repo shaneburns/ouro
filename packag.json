@@ -1,15 +1,11 @@
 {
-  "name": "exolvuntur-engine",
+  "name": "oro",
   "version": "0.0.1",
   "description": "Game Engine using THREE.JS",
-  "main": "./build/index.js",
-  "dependencies": {
-    "three": "^0.122.0",
-    "stats-js": "^1.0.1"
-  },
-  "devDependencies": {},
+  "main": "./build/ORO.js",
+  "type": "module",
   "scripts": {
-    "build": "rollup ./src/base.js --file ./build/index.js --format cjs",
+    "build": "rollup ./src/ORO.js --file ./build/ORO.js --format cjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/shaneburns/oro/issues"
   },
-  "homepage": "https://github.com/shaneburns/oro#readme"
+  "homepage": "https://github.com/shaneburns/oro#readme",
+  "dependencies": {
+    "stats-js": "^1.0.1",
+    "three": "^0.122.0"
+  }
 }
