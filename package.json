@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/shaneburns/oro#readme",
   "dependencies": {
+    "stats-js": "^1.0.1",
     "three": "^0.122.0"
   }
 }
