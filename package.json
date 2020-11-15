@@ -1,6 +1,6 @@
 {
   "name": "ouro-engine",
-  "version": "0.0.1a",
+  "version": "0.0.1b",
   "description": "Game Engine using THREE.JS",
   "main": "./build/OURO.js",
   "dependencies": {
@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build": "rollup ./src/base.js --file ./build/index.js --format cjs",
+    "build": "rollup ./src/OURO.js --o ./build/OURO.js --f cjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
