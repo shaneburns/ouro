@@ -1,5 +1,6 @@
 import {MenuManager} from './menuManager.js'
 import {EpisodeManager} from './episodeManager.js'
+//import * as Stats from './../../node_modules/stats-js/build/stats.js'
 /* Creation Class 
     Desc: This class is a base class to setup and act as a dependancy hub for canvas, renderer, tickDelta, etc
 
@@ -37,7 +38,7 @@ class Creation {
 
         // This is for frame rate stats
         // Commenting for now
-        // if(stats){
+        // if(settings.stats){
         //     // Add Stats
         //     this.stats = new Stats()
         //     this.stats.showPanel(0)
@@ -53,7 +54,7 @@ class Creation {
     
     //////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////  Setters
-    setMenuManager(menuManger){
+    setMenuManager(menuManager){
         this.menuManager = menuManager;
     }
     setEpisodeManager(episodeManger){
@@ -70,6 +71,7 @@ class Creation {
     }
 
     start(){
+        this.episodeManager.start()
         requestAnimationFrame(this.render())
     }
         ////////////////////////////            \\\\\\\\\\\\\\\\\\\\\\\\\\\\

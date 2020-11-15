@@ -16,6 +16,18 @@ class EpisodeManager{
     //////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////  Setters
 
+
+    //////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////  Methods
+    start(){
+        this.startActiveEpisode()
+    }
+    pause(){
+
+    }
+    stop(){
+
+    }
     iterateIndex(){
         this.index += 1
         return this.index
@@ -40,10 +52,10 @@ class EpisodeManager{
     }
 
     startActiveEpisode(){
-        this.activeEpisode.SceneManager.start()
+        this.activeEpisode.start()
     }
     endActiveEpisode(){
-        this.activeEpisode.SceneManager.stop()
+        this.activeEpisode.stop()
     }
     render(){
         this.activeEpisode.render();

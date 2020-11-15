@@ -24,6 +24,18 @@ class EpisodeManager{
     //////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////  Setters
 
+
+    //////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////  Methods
+    start(){
+        this.startActiveEpisode();
+    }
+    pause(){
+
+    }
+    stop(){
+
+    }
     iterateIndex(){
         this.index += 1;
         return this.index
@@ -48,16 +60,17 @@ class EpisodeManager{
     }
 
     startActiveEpisode(){
-        this.activeEpisode.SceneManager.start();
+        this.activeEpisode.start();
     }
     endActiveEpisode(){
-        this.activeEpisode.SceneManager.stop();
+        this.activeEpisode.stop();
     }
     render(){
         this.activeEpisode.render();
     }
 }
 
+//import * as Stats from './../../node_modules/stats-js/build/stats.js'
 /* Creation Class 
     Desc: This class is a base class to setup and act as a dependancy hub for canvas, renderer, tickDelta, etc
 
@@ -95,7 +108,7 @@ class Creation {
 
         // This is for frame rate stats
         // Commenting for now
-        // if(stats){
+        // if(settings.stats){
         //     // Add Stats
         //     this.stats = new Stats()
         //     this.stats.showPanel(0)
@@ -111,7 +124,7 @@ class Creation {
     
     //////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////  Setters
-    setMenuManager(menuManger){
+    setMenuManager(menuManager){
         this.menuManager = menuManager;
     }
     setEpisodeManager(episodeManger){
@@ -128,6 +141,7 @@ class Creation {
     }
 
     start(){
+        this.episodeManager.start();
         requestAnimationFrame(this.render());
     }
         ////////////////////////////            \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -149,11 +163,49 @@ class Creation {
 class SceneManager {
     constructor(creation, options){
         this.creation = creation;
-        this.list = options.list ? options.list : [];
+        this.sceneList = options.list ? options.list : [];
         this.index = 0;
         this.activeScene = null;
+        this.lastScene = null;
+        this.nextScene = null;
 
         
+    }
+    iterateIndex(){
+        this.index += 1;
+        return this.index
+    }
+
+    iterateScene(){
+        this.lastScene = this.activeScene;
+        this.activeScene = this.nextScene;
+        this.setNextScene();
+
+        this.unloadLastScene();
+    }
+    setNextScene(){
+        this.nextScene = this.sceneList[this.iterateIndex()];
+    }
+    loadNextScene(){
+        if(this.nextScene) this.nextScene = new this.nextScene();
+    }
+    unloadLastScene(){
+        // call Destruct on Episode
+        this.lastScene.dispose();
+        this.lastScene = null;
+    }
+
+    startActiveScene(){
+        this.activeScene.start();
+    }
+    endaAtiveScene(){
+        this.activeScene.stop();
+        this.loadNextScene();
+        this.iterateScene();
+    }
+    start(){
+        this.activeScene = this.sceneList[this.index];
+        this.setNextScene();
     }
     render(){
         // call render method of active scene(s)
@@ -175,6 +227,14 @@ class EpisodeSkeleton{
         // Managers
         this.sceneManager = settings.sceneManager ? settings.sceneManager : new SceneManager(this.creation); // Instantiate SceneManager
     }
+    start(){
+        this.sceneManager.start();
+    }
+    stop(){
+        this.sceneManager.stop();
+    }
+    //////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////  Methods
     render(){
         this.sceneManager.render();
     }
@@ -196,6 +256,22 @@ class SceneSkeleton {
             this.setAspect();
         }, false );
     }
+
+    //////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////  Methods
+    start(){
+        // :/ I don't know what to put here yet
+        // What part of the scene would need to be started?
+    }
+    
+    end(){
+
+    }
+
+    update(){
+        
+    }
+
     setAspect(){
         this.camera.aspect = this.creation.canvas.width() / this.creation.canvas.height();
         this.camera.updateProjectionMatrix();
@@ -203,7 +279,13 @@ class SceneSkeleton {
         this.creation.renderer.setSize( this.creation.canvas.width(), this.creation.canvas.height() );
     }
     render(){
+        this.update();
         this.creation.renderer.render(this.scene, this.camera);
+    }
+
+    // Dispose
+    dispose(){
+        // dereference everything
     }
 }
 

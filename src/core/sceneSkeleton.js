@@ -14,6 +14,22 @@ class SceneSkeleton {
             this.setAspect()
         }, false )
     }
+
+    //////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////  Methods
+    start(){
+        // :/ I don't know what to put here yet
+        // What part of the scene would need to be started?
+    }
+    
+    end(){
+
+    }
+
+    update(){
+        
+    }
+
     setAspect(){
         this.camera.aspect = this.creation.canvas.width() / this.creation.canvas.height()
         this.camera.updateProjectionMatrix()
@@ -21,7 +37,13 @@ class SceneSkeleton {
         this.creation.renderer.setSize( this.creation.canvas.width(), this.creation.canvas.height() )
     }
     render(){
+        this.update()
         this.creation.renderer.render(this.scene, this.camera)
+    }
+
+    // Dispose
+    dispose(){
+        // dereference everything
     }
 }
 
