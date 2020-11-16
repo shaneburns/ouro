@@ -9,16 +9,16 @@ class Creation {
     constructor(settings = {}){
         //---------------------------------------------------
         // Members
-        this.canvas = settings.canvasId ? document.querySelector("#" + this.settings.canvasId) : document.body.appendChild(document.createElement("canvas"))
-        this.renderer = new THREE.WebGLRenderer()
-        this.renderer.shadowMap.enabled = settings.shadowMapEnabled ? settings.shadowMapEnabled : true
-        if(this.render.shadowMap.enabled) this.renderer.shadowMap.type = THREE.BasicShadowMap
-        this.canvas.el.appendChild(this.renderer.domElement)
+        this.canvas = settings.canvasId ? document.querySelector("#" + settings.canvasId) : document.body;
+        this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
+        this.renderer.shadowMap.enabled = settings.shadowMapEnabled ? settings.shadowMapEnabled : true;
+        if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.BasicShadowMap;
+        
 
 
-        this.mtlLoader = new THREE.MTLLoader() // Material Loader
-        this.objLoader = new THREE.OBJLoader() // Object Loader
-        this.texLoader = new THREE.TextureLoader // Texture Loader
+        // this.mtlLoader = new THREE.MTLLoader() // Material Loader
+        // this.objLoader = new THREE.OBJLoader() // Object Loader
+        // this.texLoader = new THREE.TextureLoader // Texture Loader
         this.collmeshlist = [] // Collidable Mesh List for Collision Detection // Should be in a manager
 
         // Clock and Tick setup
@@ -58,7 +58,7 @@ class Creation {
         this.menuManager = menuManager;
     }
     setEpisodeManager(episodeManger){
-        this.episodeManger = episodeManger;
+        this.episodeManager = episodeManger;
     }
 
 
@@ -72,13 +72,13 @@ class Creation {
 
     start(){
         this.episodeManager.start()
-        requestAnimationFrame(this.render())
+        requestAnimationFrame(()=>this.render())
     }
         ////////////////////////////            \\\\\\\\\\\\\\\\\\\\\\\\\\\\
     //\\\\\\\\\\\\\----------------  = RENDER =  ----------------///////////////
         //\\\\\\\\\\\\\\\\\\\\\\\\\\            ////////////////////////////
     render(){
-        requestAnimationFrame(this.render())
+        
 
         // Update Tick
         this.tickUpdate()
@@ -87,6 +87,7 @@ class Creation {
         this.episodeManager.render()
         //mg.stats.end()
 
+        window.requestAnimationFrame(()=>this.render())
     }
 }
 

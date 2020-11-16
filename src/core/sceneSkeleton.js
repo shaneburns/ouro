@@ -5,14 +5,16 @@
         then call the super.render() function in render after updating any movement or physics.
 */
 class SceneSkeleton {
-    constructor(creation){
-        this.creation = creation
-        this.scene = new THREE.Scene()
+    constructor(creation, settings = {}){
+        this.creation = creation;
+        this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2( 0x202020, 0.025 );
-        this.camera = new THREE.PerspectiveCamera(90, this.creation.canvas.width()/this.creation.canvas.height(), 0.1, 1000)
+        this.camera = new THREE.PerspectiveCamera(90, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
+        
+        this.setAspect();
         window.addEventListener( 'resize', ()=>{
-            this.setAspect()
-        }, false )
+            this.setAspect();
+        }, false );
     }
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -27,18 +29,18 @@ class SceneSkeleton {
     }
 
     update(){
-        
+
     }
 
     setAspect(){
-        this.camera.aspect = this.creation.canvas.width() / this.creation.canvas.height()
-        this.camera.updateProjectionMatrix()
+        this.camera.aspect = this.creation.canvas.clientWidth/ this.creation.canvas.clientHeight;
+        this.camera.updateProjectionMatrix();
 
-        this.creation.renderer.setSize( this.creation.canvas.width(), this.creation.canvas.height() )
+        this.creation.renderer.setSize( this.creation.canvas.clientWidth, this.creation.canvas.clientHeight );
     }
     render(){
-        this.update()
-        this.creation.renderer.render(this.scene, this.camera)
+        this.update();
+        this.creation.renderer.render(this.scene, this.camera);
     }
 
     // Dispose

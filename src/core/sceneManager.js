@@ -1,8 +1,8 @@
 class SceneManager {
-    constructor(creation, options){
+    constructor(creation, settings = {}){
         this.creation = creation
-        this.sceneList = options.list ? options.list : []
-        this.index = 0
+        this.sceneList = settings.sceneList ? settings.sceneList : []
+        this.index = settings.index ? settings.index : 0
         this.activeScene = null
         this.lastScene = null
         this.nextScene = null
@@ -25,7 +25,7 @@ class SceneManager {
         this.nextScene = this.sceneList[this.iterateIndex()]
     }
     loadNextScene(){
-        if(this.nextScene) this.nextScene = new this.nextScene()
+        if(this.nextScene) this.nextScene = new this.nextScene(this.creation)
     }
     unloadLastScene(){
         // call Destruct on Episode
@@ -42,7 +42,7 @@ class SceneManager {
         this.iterateScene()
     }
     start(){
-        this.activeScene = this.sceneList[this.index]
+        this.activeScene = new this.sceneList[this.index](this.creation)
         this.setNextScene()
     }
     render(){

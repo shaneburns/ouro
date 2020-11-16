@@ -1,6 +1,6 @@
 import {SceneManager} from './sceneManager'
 class EpisodeSkeleton{
-    constructor(creation, settings){
+    constructor(creation, settings = {}){
         //---------------------------------------------------------
         // Members
         this.creation = creation

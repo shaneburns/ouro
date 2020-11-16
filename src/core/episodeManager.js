@@ -1,5 +1,5 @@
 class EpisodeManager{
-    constructor(creation, settings){
+    constructor(creation, settings = {}){
         //---------------------------------------------------------
         // Members
         this.creation = creation // dependancy injection
@@ -20,6 +20,7 @@ class EpisodeManager{
     //////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////  Methods
     start(){
+        this.activeEpisode = new this.episodeList[this.index](this.creation)
         this.startActiveEpisode()
     }
     pause(){
@@ -43,7 +44,7 @@ class EpisodeManager{
         this.unloadLastEpisode()
     }
     loadNextEpisode(){
-        this.nextEpisode = new this.nextEpisode();
+        this.nextEpisode = new this.nextEpisode(this.creation);
     }
     unloadLastEpisode(){
         // call Destruct on Episode
