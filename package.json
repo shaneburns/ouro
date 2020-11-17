@@ -1,6 +1,6 @@
 {
   "name": "ouro-engine",
-  "version": "0.0.2",
+  "version": "0.0.2-a",
   "description": "Game Engine using THREE.JS",
   "main": "build/OURO.js",
   "module": "build/OURO.module.js",
