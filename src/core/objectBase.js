@@ -1,6 +1,6 @@
 //import * as CANNON from './../../node_modules/cannon/build/cannon.js'
 
-export class objectBase {
+export class ObjectBase {
     constructor(creation, settings = {}){
         this.creation = creation
         this.mtl = settings.mtl ?? null

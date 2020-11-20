@@ -324,7 +324,7 @@
 
 	//import * as CANNON from './../../node_modules/cannon/build/cannon.js'
 
-	class objectBase {
+	class ObjectBase {
 	    constructor(creation, settings = {}){
 	        this.creation = creation;
 	        this.mtl = settings.mtl ?? null;
@@ -341,7 +341,7 @@
 
 	}
 
-	class basicCube extends objectBase{
+	class BasicCube extends ObjectBase{
 	    constructor(creation, settings = {
 	        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 4}),
 	        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(0.5, 0.5, 0.5), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
@@ -350,14 +350,177 @@
 	    }
 	}
 
+	class Controls {
+	    
+	    constructor(camera){
+	        this.camera = camera;
+	        this.forward = false;
+	        this.left = false;
+	        this.right = false;
+	        this.backward = false;
+	        this.jump = false;
+	        this.canJump = true;
+	        this.f = new THREE.Vector3();
+	        this.keypressed = null;
+	        this.keyreleased = null;
+	        this.mousemove = null;
+	        this.pointerLock = null;
+	        this.hasPointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document,
+	        this.pointerlockchange = null;
+	        this.pointerlockerror = null;
+	        this.element = null;
+	        // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
+
+				if ( this.hasPointerLock ) {
+					this.element = document.body;
+	                this.pointerLock = new THREE.PointerLockControls(this.camera, this.element);
+
+					this.pointerlockchange = ( event )=>{
+						if ( document.pointerLockElement === this.element || document.mozPointerLockElement === this.element || document.webkitPointerLockElement === this.element ) {
+							this.pointerLock.enabled = true;
+						} else {
+							this.pointerLock.enabled = false;
+						}
+					};
+
+					this.pointerlockerror = function ( event ) {
+						// Handle it
+					};
+
+	                this.keyPressed = (e)=>{
+	                    switch(e.keyCode){
+	                        case 87:
+	                            this.forward = true;
+	                            break
+	                        case 65:
+	                            this.left = true;
+	                            break
+	                        case 83:
+	                            this.backward = true;
+	                            break
+	                        case 68:
+	                            this.right = true;
+	                            break;
+	                        case 32:
+	                            this.jump = true;
+	                            break;}};
+
+	                this.keyReleased = (e)=>{
+	                    switch(e.keyCode){
+	                        case 87:
+	                            this.forward = false;
+	                            break
+	                        case 65:
+	                            this.left = false;
+	                            break
+	                        case 83:
+	                            this.backward = false;
+	                            break
+	                        case 68:
+	                            this.right = false;
+	                            break;
+	                        case 32:
+	                            this.jump = false;
+	                            break;}};
+
+					// Hook pointer lock state change events
+					document.addEventListener( 'pointerlockchange', this.pointerlockchange, false );
+					document.addEventListener( 'mozpointerlockchange', this.pointerlockchange, false );
+					document.addEventListener( 'webkitpointerlockchange', this.pointerlockchange, false );
+
+					document.addEventListener( 'pointerlockerror', this.pointerlockerror, false );
+					document.addEventListener( 'mozpointerlockerror', this.pointerlockerror, false );
+					document.addEventListener( 'webkitpointerlockerror', this.pointerlockerror, false );
+
+					this.element.addEventListener( 'click', ( event )=>{
+	                    // Ask the browser to lock the pointer
+						this.element.requestPointerLock = this.element.requestPointerLock || this.element.mozRequestPointerLock || this.element.webkitRequestPointerLock;
+						this.element.requestPointerLock();
+
+					}, false );
+
+	                // Listen for Key Events
+	                window.addEventListener('keydown', this.keyPressed);
+	                window.addEventListener('keyup', this.keyReleased);
+
+				}
+	    }
+	}
+
+	class Character extends ObjectBase{
+	    constructor(creation, camera, settings = {
+	        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 6}),
+	        mesh: new THREE.Object3D()
+	    }){
+	        super(creation, settings);
+	        this.speed = 3;
+	        this.v = new THREE.Vector3();
+	        this.a = new THREE.Vector3();
+	        this.renderBody = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
+	        this.mesh.add(this.renderBody);
+	        this.controls = new Controls(camera);
+
+	        // Add a line mesh to visulaize the velocity vectors length/direction
+	        // for testing
+	        this.vMagLine = {geom: new THREE.Geometry(),mat: new THREE.LineBasicMaterial({color: 0xff0000 }),m:null};
+	        this.vMagLine.geom.vertices.push( new THREE.Vector3(), this.v);
+	        this.vMagLine.geom.verticesNeedUpdate = true;
+	        this.vMagLine.m = new THREE.Line( this.vMagLine.geom, this.vMagLine.mat );
+	        this.vMagLine.m.position.setY(5);
+	        this.mesh.add( this.vMagLine.m );
+	    }
+	    applyForce(force){
+	        this.a.add(force.divideScalar(this.body.mass));
+	    }
+	    updatePosition(){
+	        super.updatePosition();
+	        this.controls.camera.position.copy(this.mesh.position);
+	        this.controls.camera.position.y += 3;
+	        this.controls.camera.position.z = this.mesh.position.z + 3;
+	        //this.controls.camera.quaternion.copy(this.mesh.quaternion)
+	    }
+	    update(){
+	        this.currSpeed = this.speed*this.creation.tickDelta;
+	        // InputForces
+	        if(this.controls.forward) this.controls.f.z-=this.currSpeed;
+	        if(this.controls.backward) this.controls.f.z+=this.currSpeed;
+	        if(this.controls.left) this.controls.f.x-=this.currSpeed;
+	        if(this.controls.right) this.controls.f.x+=this.currSpeed;
+	        if(this.controls.jump) this.controls.f.y+=this.currSpeed*2;
+
+	        this.applyForce(this.controls.f);
+
+	        this.drag = this.v.clone();
+	        this.drag.normalize();
+	        this.dragSpeed = this.v.lengthSq();
+	        this.c = -2.25;
+	        this.drag.multiplyScalar(this.c*this.dragSpeed);
+	        this.applyForce(this.drag);
+
+	        this.v.add(this.a);
+	        if(this.v.length() < 0.01)this.v.multiplyScalar(0);
+
+	        this.body.position.x += this.v.x;
+	        this.body.position.y += this.v.y;
+	        this.body.position.z += this.v.z;
+
+	        this.vMagLine.geom.verticesNeedUpdate = true;
+	        this.a.multiplyScalar(0);
+
+	        this.updatePosition();
+	    }
+	}
+
+	exports.BasicCube = BasicCube;
+	exports.Character = Character;
+	exports.Controls = Controls;
 	exports.Creation = Creation;
 	exports.EpisodeManager = EpisodeManager;
 	exports.EpisodeSkeleton = EpisodeSkeleton;
 	exports.MenuManager = MenuManager;
+	exports.ObjectBase = ObjectBase;
 	exports.SceneManager = SceneManager;
 	exports.SceneSkeleton = SceneSkeleton;
-	exports.basicCube = basicCube;
-	exports.objectBase = objectBase;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
