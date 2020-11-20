@@ -481,8 +481,9 @@ class Character extends ObjectBase{
         if(this.controls.left) this.controls.f.x-=this.currSpeed;
         if(this.controls.right) this.controls.f.x+=this.currSpeed;
         if(this.controls.jump) this.controls.f.y+=this.currSpeed*2;
-
-        this.applyForce(this.controls.f);
+        let camRotCopy = this.controls.camera.rotation.clone()
+        camRotCopy.y = 0
+        this.applyForce(this.controls.f.applyEuler(camRotCopy));
 
         this.drag = this.v.clone();
         this.drag.normalize();

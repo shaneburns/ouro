@@ -488,7 +488,7 @@
 	        if(this.controls.right) this.controls.f.x+=this.currSpeed;
 	        if(this.controls.jump) this.controls.f.y+=this.currSpeed*2;
 
-	        this.applyForce(this.controls.f);
+	        this.applyForce(this.controls.f.applyEuler(this.controls.camera.rotation));
 
 	        this.drag = this.v.clone();
 	        this.drag.normalize();
