@@ -7,6 +7,8 @@
 class SceneSkeleton {
     constructor(creation, settings = {}){
         this.creation = creation;
+
+        // THREE
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2( 0x202020, 0.025 );
         this.camera = new THREE.PerspectiveCamera(90, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
@@ -15,8 +17,19 @@ class SceneSkeleton {
         window.addEventListener( 'resize', ()=>{
             this.setAspect();
         }, false );
+
+        // CANNON
+        
+        this.world = new CANNON.World()
+        this.world.gravity.set(0, -9.82, 0)
+        this.world.broadphase = new CANNON.NaiveBroadphase
+
     }
 
+    add(obj){
+        this.scene.add(obj.mesh)
+        this.world.addBody(obj.body)
+    }
     //////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////  Methods
     start(){
@@ -40,12 +53,17 @@ class SceneSkeleton {
     }
     render(){
         this.update();
+        this.world.step(1.0/60.0,this.creation.tickDelta,3);
         this.creation.renderer.render(this.scene, this.camera);
     }
 
     // Dispose
     dispose(){
         // dereference everything
+        this.scene = null;
+        this.camera = null;
+        this.render = null;
+        
     }
 }
 

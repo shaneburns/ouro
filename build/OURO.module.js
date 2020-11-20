@@ -178,11 +178,11 @@ class SceneManager {
         this.lastScene = this.activeScene;
         this.activeScene = this.nextScene;
         this.setNextScene();
-
+        this.iterateIndex();
         this.unloadLastScene();
     }
-    setNextScene(){
-        this.nextScene = this.sceneList[this.iterateIndex()];
+    setNextScene(index = this.index + 1){
+        this.nextScene = this.sceneList[index];
     }
     loadNextScene(){
         if(this.nextScene) this.nextScene = new this.nextScene(this.creation);
@@ -196,7 +196,7 @@ class SceneManager {
     startActiveScene(){
         this.activeScene.start();
     }
-    endaAtiveScene(){
+    endActiveScene(){
         this.activeScene.stop();
         this.loadNextScene();
         this.iterateScene();
@@ -207,7 +207,7 @@ class SceneManager {
     }
     render(){
         // call render method of active scene(s)
-        this.activeScene.render();
+        if(this.activeScene.render)this.activeScene.render();
         //this.creation.renderer.render(this.activeScene.scene, this.activeScene.camera)
     }
 
@@ -224,6 +224,15 @@ class EpisodeSkeleton{
         //---------------------------------------------------------
         // Managers
         this.sceneManager = settings.sceneManager ? settings.sceneManager : new SceneManager(this.creation); // Instantiate SceneManager
+    }
+    nextScene(){
+        this.sceneManager.loadNextScene();
+        this.sceneManager.iterateScene();
+    }
+    goToScene(sceneIndex){
+        this.sceneManager.index = sceneIndex;
+        this.sceneManager.setNextScene(sceneIndex);
+        this.nextScene();
     }
     start(){
         this.sceneManager.start();
@@ -247,6 +256,8 @@ class EpisodeSkeleton{
 class SceneSkeleton {
     constructor(creation, settings = {}){
         this.creation = creation;
+
+        // THREE
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2( 0x202020, 0.025 );
         this.camera = new THREE.PerspectiveCamera(90, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
@@ -255,8 +266,19 @@ class SceneSkeleton {
         window.addEventListener( 'resize', ()=>{
             this.setAspect();
         }, false );
+
+        // CANNON
+        
+        this.world = new CANNON.World();
+        this.world.gravity.set(0, -9.82, 0);
+        this.world.broadphase = new CANNON.NaiveBroadphase;
+
     }
 
+    add(obj){
+        this.scene.add(obj.mesh);
+        this.world.addBody(obj.body);
+    }
     //////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////  Methods
     start(){
@@ -280,13 +302,46 @@ class SceneSkeleton {
     }
     render(){
         this.update();
+        this.world.step(1.0/60.0,this.creation.tickDelta,3);
         this.creation.renderer.render(this.scene, this.camera);
     }
 
     // Dispose
     dispose(){
         // dereference everything
+        this.scene = null;
+        this.camera = null;
+        this.render = null;
+        
     }
 }
 
-export { Creation, EpisodeManager, EpisodeSkeleton, MenuManager, SceneManager, SceneSkeleton };
+//import * as CANNON from './../../node_modules/cannon/build/cannon.js'
+
+class objectBase {
+    constructor(creation, settings = {}){
+        this.creation = creation;
+        this.mtl = settings.mtl ?? null;
+        this.geo = settings.geo ?? null;
+        this.mesh = settings.mesh ?? new THREE.Mesh(this.geo, this.mtl);
+        this.body = settings.body ?? new CANNON.Body({mass: settings.mass ?? 1, shape: settings.shape ?? null});
+        
+        
+    }
+    updatePosition(){
+        this.mesh.position.copy(this.body.position);
+        this.mesh.quaternion.copy(this.body.quaternion);
+    }
+
+}
+
+class basicCube extends objectBase{
+    constructor(creation, settings = {
+        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 4}),
+        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(0.5, 0.5, 0.5), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
+    }){
+        super(creation, settings);
+    }
+}
+
+export { Creation, EpisodeManager, EpisodeSkeleton, MenuManager, SceneManager, SceneSkeleton, basicCube, objectBase };

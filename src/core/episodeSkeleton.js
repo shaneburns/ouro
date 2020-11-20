@@ -11,6 +11,15 @@ class EpisodeSkeleton{
         // Managers
         this.sceneManager = settings.sceneManager ? settings.sceneManager : new SceneManager(this.creation) // Instantiate SceneManager
     }
+    nextScene(){
+        this.sceneManager.loadNextScene()
+        this.sceneManager.iterateScene()
+    }
+    goToScene(sceneIndex){
+        this.sceneManager.index = sceneIndex
+        this.sceneManager.setNextScene(sceneIndex)
+        this.nextScene()
+    }
     start(){
         this.sceneManager.start()
     }

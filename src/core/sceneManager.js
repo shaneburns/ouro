@@ -18,11 +18,11 @@ class SceneManager {
         this.lastScene = this.activeScene
         this.activeScene = this.nextScene
         this.setNextScene()
-
+        this.iterateIndex()
         this.unloadLastScene()
     }
-    setNextScene(){
-        this.nextScene = this.sceneList[this.iterateIndex()]
+    setNextScene(index = this.index + 1){
+        this.nextScene = this.sceneList[index]
     }
     loadNextScene(){
         if(this.nextScene) this.nextScene = new this.nextScene(this.creation)
@@ -36,7 +36,7 @@ class SceneManager {
     startActiveScene(){
         this.activeScene.start()
     }
-    endaAtiveScene(){
+    endActiveScene(){
         this.activeScene.stop()
         this.loadNextScene()
         this.iterateScene()
@@ -47,7 +47,7 @@ class SceneManager {
     }
     render(){
         // call render method of active scene(s)
-        this.activeScene.render()
+        if(this.activeScene.render)this.activeScene.render()
         //this.creation.renderer.render(this.activeScene.scene, this.activeScene.camera)
     }
 
