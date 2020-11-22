@@ -1,3 +1,5 @@
+import 'cannon';
+
 class MenuManager {
 
 }
@@ -272,7 +274,7 @@ class SceneSkeleton {
         this.world = new CANNON.World();
         this.world.gravity.set(0, -9.82, 0);
         this.world.broadphase = new CANNON.NaiveBroadphase;
-
+        //this.debugrenderer = new THREE.CannonDebugRenderer(this.scene, this.world)
     }
 
     add(obj){
@@ -341,6 +343,8 @@ class BasicCube extends ObjectBase{
         mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(0.5, 0.5, 0.5), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
     }){
         super(creation, settings);
+        this.mesh.castShadow = true;
+        this.mesh.recieveShadow = false;
     }
 }
 
@@ -450,6 +454,7 @@ class Character extends ObjectBase{
         this.speed = 3;
         this.v = new THREE.Vector3();
         this.a = new THREE.Vector3();
+        this.force = new CANNON.Vec3();
         this.renderBody = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
         this.mesh.add(this.renderBody);
         this.controls = new Controls(camera);
@@ -474,16 +479,19 @@ class Character extends ObjectBase{
         //this.controls.camera.quaternion.copy(this.mesh.quaternion)
     }
     update(){
+        let where = this.body.pointToWorldFrame(new CANNON.Vec3());
         this.currSpeed = this.speed*this.creation.tickDelta;
         // InputForces
         if(this.controls.forward) this.controls.f.z-=this.currSpeed;
         if(this.controls.backward) this.controls.f.z+=this.currSpeed;
         if(this.controls.left) this.controls.f.x-=this.currSpeed;
         if(this.controls.right) this.controls.f.x+=this.currSpeed;
+        let yLockedCamRot = this.controls.camera.rotation.clone();
+        yLockedCamRot.y = 0;
+        this.controls.f.applyEuler(yLockedCamRot);
+        this.controls.f.y = 0;
         if(this.controls.jump) this.controls.f.y+=this.currSpeed*2;
-        let camRotCopy = this.controls.camera.rotation.clone()
-        camRotCopy.y = 0
-        this.applyForce(this.controls.f.applyEuler(camRotCopy));
+        this.applyForce(this.controls.f);
 
         this.drag = this.v.clone();
         this.drag.normalize();
@@ -494,10 +502,8 @@ class Character extends ObjectBase{
 
         this.v.add(this.a);
         if(this.v.length() < 0.01)this.v.multiplyScalar(0);
-
-        this.body.position.x += this.v.x;
-        this.body.position.y += this.v.y;
-        this.body.position.z += this.v.z;
+        this.force.set(this.v.x*400, this.v.y*400, this.v.z*400);
+        this.body.applyForce(this.force, where);
 
         this.vMagLine.geom.verticesNeedUpdate = true;
         this.a.multiplyScalar(0);

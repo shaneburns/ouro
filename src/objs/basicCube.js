@@ -6,5 +6,7 @@ export class BasicCube extends ObjectBase{
         mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(0.5, 0.5, 0.5), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
     }){
         super(creation, settings)
+        this.mesh.castShadow = true
+        this.mesh.recieveShadow = false
     }
 }
