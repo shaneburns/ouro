@@ -1,5 +1,3 @@
-import 'cannon';
-
 class MenuManager {
 
 }
@@ -447,11 +445,11 @@ class Controls {
 
 class Character extends ObjectBase{
     constructor(creation, camera, settings = {
-        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 6}),
+        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 5}),
         mesh: new THREE.Object3D()
     }){
         super(creation, settings);
-        this.speed = 3;
+        this.speed = 30;
         this.v = new THREE.Vector3();
         this.a = new THREE.Vector3();
         this.force = new CANNON.Vec3();
@@ -498,11 +496,11 @@ class Character extends ObjectBase{
         this.dragSpeed = this.v.lengthSq();
         this.c = -2.25;
         this.drag.multiplyScalar(this.c*this.dragSpeed);
-        this.applyForce(this.drag);
+        //this.applyForce(this.drag);
 
-        this.v.add(this.a);
+        //this.v.add(this.a)
         if(this.v.length() < 0.01)this.v.multiplyScalar(0);
-        this.force.set(this.v.x*400, this.v.y*400, this.v.z*400);
+        this.force.set(this.a.x*400, this.a.y*400, this.a.z*400);
         this.body.applyForce(this.force, where);
 
         this.vMagLine.geom.verticesNeedUpdate = true;
