@@ -8,3 +8,5 @@ export { ObjectBase } from './core/objectBase.js';
 export { BasicCube } from './objs/basicCube.js';
 export { Character } from './core/character.js';
 export { Controls } from './core/controls.js';
+export { Enemy } from './core/enemy.js';
+export { BasicSphere} from './objs/basicSphere.js';
