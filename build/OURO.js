@@ -278,7 +278,7 @@
 	        this.world = new CANNON.World();
 	        this.world.gravity.set(0, -9.82, 0);
 	        this.world.broadphase = new CANNON.NaiveBroadphase;
-	        //this.debugrenderer = new THREE.CannonDebugRenderer(this.scene, this.world)
+	        this.debugrenderer = new THREE.CannonDebugRenderer(this.scene, this.world);
 	    }
 
 	    add(obj){
@@ -344,7 +344,7 @@
 	class BasicCube extends ObjectBase{
 	    constructor(creation, settings = {
 	        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 4}),
-	        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(0.5, 0.5, 0.5), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
+	        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
 	    }){
 	        super(creation, settings);
 	        this.mesh.castShadow = true;
@@ -373,79 +373,94 @@
 	        this.element = null;
 	        // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 
-				if ( this.hasPointerLock ) {
-					this.element = document.body;
-	                this.pointerLock = new THREE.PointerLockControls(this.camera, this.element);
+	        if ( this.hasPointerLock ) {
+	            this.element = document.body;
+	            this.pointerLock = new THREE.PointerLockControls(this.camera, this.element);
 
-					this.pointerlockchange = ( event )=>{
-						if ( document.pointerLockElement === this.element || document.mozPointerLockElement === this.element || document.webkitPointerLockElement === this.element ) {
-							this.pointerLock.enabled = true;
-						} else {
-							this.pointerLock.enabled = false;
-						}
-					};
+	            this.pointerlockchange = ( event )=>{
+	                if ( document.pointerLockElement === this.element || document.mozPointerLockElement === this.element || document.webkitPointerLockElement === this.element ) {
+	                    this.pointerLock.enabled = true;
+	                } else {
+	                    this.pointerLock.enabled = false;
+	                }
+	            };
 
-					this.pointerlockerror = function ( event ) {
-						// Handle it
-					};
+	            this.pointerlockerror = function ( event ) {
+	                // Handle it
+	            };
 
-	                this.keyPressed = (e)=>{
-	                    switch(e.keyCode){
-	                        case 87:
-	                            this.forward = true;
-	                            break
-	                        case 65:
-	                            this.left = true;
-	                            break
-	                        case 83:
-	                            this.backward = true;
-	                            break
-	                        case 68:
-	                            this.right = true;
-	                            break;
-	                        case 32:
-	                            this.jump = true;
-	                            break;}};
+	            this.keyPressed = (e)=>{
+	                switch(e.keyCode){
+	                    case 87:
+	                        this.forward = true;
+	                        break
+	                    case 65:
+	                        this.left = true;
+	                        break
+	                    case 83:
+	                        this.backward = true;
+	                        break
+	                    case 68:
+	                        this.right = true;
+	                        break;
+	                    case 32:
+	                        this.jump = true;
+	                        break;}};
 
-	                this.keyReleased = (e)=>{
-	                    switch(e.keyCode){
-	                        case 87:
-	                            this.forward = false;
-	                            break
-	                        case 65:
-	                            this.left = false;
-	                            break
-	                        case 83:
-	                            this.backward = false;
-	                            break
-	                        case 68:
-	                            this.right = false;
-	                            break;
-	                        case 32:
-	                            this.jump = false;
-	                            break;}};
+	            this.keyReleased = (e)=>{
+	                switch(e.keyCode){
+	                    case 87:
+	                        this.forward = false;
+	                        break
+	                    case 65:
+	                        this.left = false;
+	                        break
+	                    case 83:
+	                        this.backward = false;
+	                        break
+	                    case 68:
+	                        this.right = false;
+	                        break;
+	                    case 32:
+	                        this.jump = false;
+	                        break;}};
 
-					// Hook pointer lock state change events
-					document.addEventListener( 'pointerlockchange', this.pointerlockchange, false );
-					document.addEventListener( 'mozpointerlockchange', this.pointerlockchange, false );
-					document.addEventListener( 'webkitpointerlockchange', this.pointerlockchange, false );
+	            // Hook pointer lock state change events
+	            document.addEventListener( 'pointerlockchange', this.pointerlockchange, false );
+	            document.addEventListener( 'mozpointerlockchange', this.pointerlockchange, false );
+	            document.addEventListener( 'webkitpointerlockchange', this.pointerlockchange, false );
 
-					document.addEventListener( 'pointerlockerror', this.pointerlockerror, false );
-					document.addEventListener( 'mozpointerlockerror', this.pointerlockerror, false );
-					document.addEventListener( 'webkitpointerlockerror', this.pointerlockerror, false );
+	            document.addEventListener( 'pointerlockerror', this.pointerlockerror, false );
+	            document.addEventListener( 'mozpointerlockerror', this.pointerlockerror, false );
+	            document.addEventListener( 'webkitpointerlockerror', this.pointerlockerror, false );
 
-					this.element.addEventListener( 'click', ( event )=>{
-	                    // Ask the browser to lock the pointer
-						this.element.requestPointerLock = this.element.requestPointerLock || this.element.mozRequestPointerLock || this.element.webkitRequestPointerLock;
-						this.element.requestPointerLock();
+	            this.element.addEventListener( 'click', ( event )=>{
+	                // Ask the browser to lock the pointer
+	                this.element.requestPointerLock = this.element.requestPointerLock || this.element.mozRequestPointerLock || this.element.webkitRequestPointerLock;
+	                this.element.requestPointerLock();
 
-					}, false );
+	            }, false );
 
-	                // Listen for Key Events
-	                window.addEventListener('keydown', this.keyPressed);
-	                window.addEventListener('keyup', this.keyReleased);
+	            // Listen for Key Events
+	            window.addEventListener('keydown', this.keyPressed);
+	            window.addEventListener('keyup', this.keyReleased);
 
-				}
+	        }
+	    }
+	    getForce(){
+	        this.f.multiplyScalar(0);
+	        // directional forces
+	        if(this.forward) this.f.z-=1;
+	        if(this.backward) this.f.z+=1;
+	        if(this.left) this.f.x-=1;
+	        if(this.right) this.f.x+=1;
+
+	        // Apply local rotation according to camera
+	        this.f.applyQuaternion(this.camera.quaternion);
+	        this.f.y = 0;// reset y for jump only
+	        // jump force
+	        if(this.jump) this.f.y+=2;
+	        return this.f
 	    }
 	}
 
@@ -455,62 +470,36 @@
 	        mesh: new THREE.Object3D()
 	    }){
 	        super(creation, settings);
-	        this.speed = 30;
-	        this.v = new THREE.Vector3();
-	        this.a = new THREE.Vector3();
-	        this.force = new CANNON.Vec3();
-	        this.renderBody = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
-	        this.mesh.add(this.renderBody);
+	        this.mesh.add(camera);
+	        camera.position.set(0, 5, -3);
+
+	        this.speed = 5000;
+	        this.model = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
+	        this.mesh.add(this.model);
 	        this.controls = new Controls(camera);
 
 	        // Add a line mesh to visulaize the velocity vectors length/direction
 	        // for testing
 	        this.vMagLine = {geom: new THREE.Geometry(),mat: new THREE.LineBasicMaterial({color: 0xff0000 }),m:null};
-	        this.vMagLine.geom.vertices.push( new THREE.Vector3(), this.v);
+	        this.vMagLine.geom.vertices.push( new THREE.Vector3(), this.body.velocity);
 	        this.vMagLine.geom.verticesNeedUpdate = true;
 	        this.vMagLine.m = new THREE.Line( this.vMagLine.geom, this.vMagLine.mat );
-	        this.vMagLine.m.position.setY(5);
+	        this.vMagLine.m.position.setY(2);
 	        this.mesh.add( this.vMagLine.m );
 	    }
-	    applyForce(force){
-	        this.a.add(force.divideScalar(this.body.mass));
-	    }
 	    updatePosition(){
-	        super.updatePosition();
-	        this.controls.camera.position.copy(this.mesh.position);
-	        this.controls.camera.position.y += 3;
-	        this.controls.camera.position.z = this.mesh.position.z + 3;
-	        //this.controls.camera.quaternion.copy(this.mesh.quaternion)
+	        //super.updatePosition()
+	        this.mesh.position.copy(this.body.position);
+	        this.model.quaternion.copy(this.body.quaternion);
 	    }
 	    update(){
-	        let where = this.body.pointToWorldFrame(new CANNON.Vec3());
 	        this.currSpeed = this.speed*this.creation.tickDelta;
-	        // InputForces
-	        if(this.controls.forward) this.controls.f.z-=this.currSpeed;
-	        if(this.controls.backward) this.controls.f.z+=this.currSpeed;
-	        if(this.controls.left) this.controls.f.x-=this.currSpeed;
-	        if(this.controls.right) this.controls.f.x+=this.currSpeed;
-	        let yLockedCamRot = this.controls.camera.rotation.clone();
-	        yLockedCamRot.y = 0;
-	        this.controls.f.applyEuler(yLockedCamRot);
-	        this.controls.f.y = 0;
-	        if(this.controls.jump) this.controls.f.y+=this.currSpeed*2;
-	        this.applyForce(this.controls.f);
-
-	        this.drag = this.v.clone();
-	        this.drag.normalize();
-	        this.dragSpeed = this.v.lengthSq();
-	        this.c = -2.25;
-	        this.drag.multiplyScalar(this.c*this.dragSpeed);
-	        //this.applyForce(this.drag);
-
-	        //this.v.add(this.a)
-	        if(this.v.length() < 0.01)this.v.multiplyScalar(0);
-	        this.force.set(this.a.x*400, this.a.y*400, this.a.z*400);
-	        this.body.applyForce(this.force, where);
+	        this.body.applyForce(
+	            this.controls.getForce().multiplyScalar(this.currSpeed),
+	            this.body.pointToWorldFrame(new CANNON.Vec3())
+	        );
 
 	        this.vMagLine.geom.verticesNeedUpdate = true;
-	        this.a.multiplyScalar(0);
 
 	        this.updatePosition();
 	    }
@@ -522,63 +511,40 @@
 	        mesh: new THREE.Object3D()
 	    }){
 	        super(creation, settings);
-	        this.speed = 30;
-	        this.v = new THREE.Vector3();
-	        this.a = new THREE.Vector3();
-	        this.force = new CANNON.Vec3();
-	        this.renderBody = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
-	        this.mesh.add(this.renderBody);
+	        this.mesh.add(camera);
+	        camera.position.set(0, 5, -3);
+
+	        this.speed = 5000;
+	        this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
+	        this.mesh.add(this.model);
 	        this.controls = new Controls(camera);
 
 	        // Add a line mesh to visulaize the velocity vectors length/direction
 	        // for testing
 	        this.vMagLine = {geom: new THREE.Geometry(),mat: new THREE.LineBasicMaterial({color: 0xff0000 }),m:null};
-	        this.vMagLine.geom.vertices.push( new THREE.Vector3(), this.v);
+	        this.vMagLine.geom.vertices.push( new THREE.Vector3(), this.body.velocity);
 	        this.vMagLine.geom.verticesNeedUpdate = true;
 	        this.vMagLine.m = new THREE.Line( this.vMagLine.geom, this.vMagLine.mat );
-	        this.vMagLine.m.position.setY(5);
+	        this.vMagLine.m.position.setY(2);
 	        this.mesh.add( this.vMagLine.m );
 	    }
 	    applyForce(force){
 	        this.a.add(force.divideScalar(this.body.mass));
 	    }
 	    updatePosition(){
-	        super.updatePosition();
-	        this.controls.camera.position.copy(this.mesh.position);
-	        this.controls.camera.position.y += 3;
-	        this.controls.camera.position.z = this.mesh.position.z + 3;
-	        //this.controls.camera.quaternion.copy(this.mesh.quaternion)
+	        //super.updatePosition()
+	        this.mesh.position.copy(this.body.position);
+	        this.model.quaternion.copy(this.body.quaternion);
 	    }
 	    update(){
-
-	        let where = this.body.pointToWorldFrame(new CANNON.Vec3());
 	        this.currSpeed = this.speed*this.creation.tickDelta;
-	        // InputForces
-	        if(this.controls.forward) this.controls.f.z-=this.currSpeed;
-	        if(this.controls.backward) this.controls.f.z+=this.currSpeed;
-	        if(this.controls.left) this.controls.f.x-=this.currSpeed;
-	        if(this.controls.right) this.controls.f.x+=this.currSpeed;
-	        let yLockedCamRot = this.controls.camera.rotation.clone();
-	        yLockedCamRot.y = 0;
-	        this.controls.f.applyEuler(yLockedCamRot);
-	        this.controls.f.y = 0;
-	        if(this.controls.jump) this.controls.f.y+=this.currSpeed*2;
-	        this.applyForce(this.controls.f);
-
-	        this.drag = this.v.clone();
-	        this.drag.normalize();
-	        this.dragSpeed = this.v.lengthSq();
-	        this.c = -2.25;
-	        this.drag.multiplyScalar(this.c*this.dragSpeed);
-	        //this.applyForce(this.drag);
-
-	        //this.v.add(this.a)
-	        if(this.v.length() < 0.01)this.v.multiplyScalar(0);
-	        this.force.set(this.a.x*400, this.a.y*400, this.a.z*400);
-	        this.body.applyForce(this.force, where);
+	        this.body.applyForce(
+	            this.controls.getForce().multiplyScalar(this.currSpeed),
+	            this.body.pointToWorldFrame(new CANNON.Vec3())
+	        );
+	        this.body.velocity;
 
 	        this.vMagLine.geom.verticesNeedUpdate = true;
-	        this.a.multiplyScalar(0);
 
 	        this.updatePosition();
 	    }
