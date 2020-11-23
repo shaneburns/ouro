@@ -356,6 +356,7 @@ class Controls {
         this.backward = false;
         this.jump = false;
         this.canJump = true;
+        this.isJumping = false;
         this.f = new THREE.Vector3();
         this.keypressed = null;
         this.keyreleased = null;
@@ -453,9 +454,22 @@ class Controls {
         this.f.applyQuaternion(this.camera.quaternion);
         this.f.y = 0;// reset y for jump only
         // jump force
-        if(this.jump) this.f.y+=2;
+        if(this.jump) {
+            if (!this.isJumping && this.canJump){
+                this.isJumping = true;
+                setTimeout(()=>{
+                    this.canJump = false;
+                    setTimeout(()=>{
+                        this.canJump = true;
+                        this.isJumping = false;
+                    }, 1000);
+                }, 200);
+            }
+            if(this.isJumping && this.canJump) this.f.y+=5;
+        }
         return this.f
     }
+
 }
 
 class Character extends ObjectBase{
@@ -508,7 +522,7 @@ class Enemy extends ObjectBase{
         this.mesh.add(camera);
         camera.position.set(0, 5, -3);
 
-        this.speed = 5000;
+        this.speed = 2000;
         this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
         this.mesh.add(this.model);
         this.controls = new Controls(camera);

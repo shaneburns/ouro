@@ -10,7 +10,7 @@ export class Enemy extends ObjectBase{
         this.mesh.add(camera)
         camera.position.set(0, 5, -3)
 
-        this.speed = 5000
+        this.speed = 2000
         this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}))
         this.mesh.add(this.model)
         this.controls = new Controls(camera)

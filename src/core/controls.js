@@ -8,6 +8,7 @@ export class Controls {
         this.backward = false
         this.jump = false
         this.canJump = true
+        this.isJumping = false
         this.f = new THREE.Vector3()
         this.keypressed = null
         this.keyreleased = null
@@ -109,7 +110,20 @@ export class Controls {
         this.f.applyQuaternion(this.camera.quaternion);
         this.f.y = 0;// reset y for jump only
         // jump force
-        if(this.jump) this.f.y+=2;
+        if(this.jump) {
+            if (!this.isJumping && this.canJump){
+                this.isJumping = true
+                setTimeout(()=>{
+                    this.canJump = false
+                    setTimeout(()=>{
+                        this.canJump = true
+                        this.isJumping = false
+                    }, 1000)
+                }, 200)
+            }
+            if(this.isJumping && this.canJump) this.f.y+=5
+        }
         return this.f
     }
+
 }
