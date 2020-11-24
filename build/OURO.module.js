@@ -80,12 +80,13 @@ class Creation {
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
         this.renderer.shadowMap.enabled = settings.shadowMapEnabled ? settings.shadowMapEnabled : true;
         if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.BasicShadowMap;
+
         
 
 
-        // this.mtlLoader = new THREE.MTLLoader() // Material Loader
-        // this.objLoader = new THREE.OBJLoader() // Object Loader
-        // this.texLoader = new THREE.TextureLoader // Texture Loader
+         this.mtlLoader = new THREE.MTLLoader() // Material Loader
+         this.objLoader = new THREE.OBJLoader() // Object Loader
+         this.texLoader = new THREE.TextureLoader // Texture Loader
         this.collmeshlist = []; // Collidable Mesh List for Collision Detection // Should be in a manager
 
         // Clock and Tick setup
