@@ -7,13 +7,11 @@ export class Enemy extends ObjectBase{
         mesh: new THREE.Object3D()
     }){
         super(creation, settings)
-        this.mesh.add(camera)
-        camera.position.set(0, 5, -3)
 
         this.speed = 2000
         this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}))
         this.mesh.add(this.model)
-        this.controls = new Controls(camera)
+        this.controls = new Controls(creation, camera, this.mesh)
 
         // Add a line mesh to visulaize the velocity vectors length/direction
         // for testing
@@ -34,11 +32,11 @@ export class Enemy extends ObjectBase{
     }
     update(){
         this.currSpeed = this.speed*this.creation.tickDelta
+        this.controls.update()
         this.body.applyForce(
             this.controls.getForce().multiplyScalar(this.currSpeed),
             this.body.pointToWorldFrame(new CANNON.Vec3())
         )
-        this.body.velocity
 
         this.vMagLine.geom.verticesNeedUpdate = true
 

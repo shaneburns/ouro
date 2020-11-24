@@ -348,8 +348,10 @@ class BasicCube extends ObjectBase{
 
 class Controls {
     
-    constructor(camera){
+    constructor(creation, camera, target){
+        this.creation = creation;
         this.camera = camera;
+        this.target = target;
         this.forward = false;
         this.left = false;
         this.right = false;
@@ -370,7 +372,7 @@ class Controls {
 
         if ( this.hasPointerLock ) {
             this.element = document.body;
-            this.pointerLock = new THREE.PointerLockControls(this.camera, this.element);
+            this.pointerLock = new THREE.PointerLockOrbitControls(this.camera, this.target, this.creation.tickDelta, this.element);
 
             this.pointerlockchange = ( event )=>{
                 if ( document.pointerLockElement === this.element || document.mozPointerLockElement === this.element || document.webkitPointerLockElement === this.element ) {
@@ -469,6 +471,10 @@ class Controls {
         }
         return this.f
     }
+    update(){
+        this.pointerLock.updateTimeElapsed(this.creation.tickDelta);
+        this.pointerLock.update();
+    }
 
 }
 
@@ -519,13 +525,11 @@ class Enemy extends ObjectBase{
         mesh: new THREE.Object3D()
     }){
         super(creation, settings);
-        this.mesh.add(camera);
-        camera.position.set(0, 5, -3);
 
         this.speed = 2000;
         this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
         this.mesh.add(this.model);
-        this.controls = new Controls(camera);
+        this.controls = new Controls(creation, camera, this.mesh);
 
         // Add a line mesh to visulaize the velocity vectors length/direction
         // for testing
@@ -546,11 +550,11 @@ class Enemy extends ObjectBase{
     }
     update(){
         this.currSpeed = this.speed*this.creation.tickDelta;
+        this.controls.update();
         this.body.applyForce(
             this.controls.getForce().multiplyScalar(this.currSpeed),
             this.body.pointToWorldFrame(new CANNON.Vec3())
         );
-        this.body.velocity;
 
         this.vMagLine.geom.verticesNeedUpdate = true;
 

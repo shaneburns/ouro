@@ -1,7 +1,9 @@
 export class Controls {
     
-    constructor(camera){
+    constructor(creation, camera, target){
+        this.creation = creation
         this.camera = camera
+        this.target = target
         this.forward = false
         this.left = false
         this.right = false
@@ -22,7 +24,7 @@ export class Controls {
 
         if ( this.hasPointerLock ) {
             this.element = document.body;
-            this.pointerLock = new THREE.PointerLockControls(this.camera, this.element)
+            this.pointerLock = new THREE.PointerLockOrbitControls(this.camera, this.target, this.creation.tickDelta, this.element)
 
             this.pointerlockchange = ( event )=>{
                 if ( document.pointerLockElement === this.element || document.mozPointerLockElement === this.element || document.webkitPointerLockElement === this.element ) {
@@ -124,6 +126,10 @@ export class Controls {
             if(this.isJumping && this.canJump) this.f.y+=5
         }
         return this.f
+    }
+    update(){
+        this.pointerLock.updateTimeElapsed(this.creation.tickDelta)
+        this.pointerLock.update()
     }
 
 }
