@@ -493,7 +493,7 @@
 	        this.mesh.add(camera);
 	        camera.position.set(0, 5, -3);
 
-	        this.speed = 5000;
+	        this.speed = 20;
 	        this.model = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
 	        this.mesh.add(this.model);
 	        this.controls = new Controls(camera);
@@ -513,7 +513,7 @@
 	        this.model.quaternion.copy(this.body.quaternion);
 	    }
 	    update(){
-	        this.currSpeed = this.speed*this.creation.tickDelta;
+	        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta);//this.speed*this.creation.tickDelta
 	        this.body.applyForce(
 	            this.controls.getForce().multiplyScalar(this.currSpeed),
 	            this.body.pointToWorldFrame(new CANNON.Vec3())
@@ -532,10 +532,10 @@
 	    }){
 	        super(creation, settings);
 
-	        this.speed = 2000;
+	        this.speed = 20;
 	        this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
 	        this.mesh.add(this.model);
-	        this.controls = new Controls(creation, camera, this.mesh);
+	        this.controls = new Controls(creation, camera, this.model);
 
 	        // Add a line mesh to visulaize the velocity vectors length/direction
 	        // for testing
@@ -555,7 +555,7 @@
 	        this.model.quaternion.copy(this.body.quaternion);
 	    }
 	    update(){
-	        this.currSpeed = this.speed*this.creation.tickDelta;
+	        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta);
 	        this.controls.update();
 	        this.body.applyForce(
 	            this.controls.getForce().multiplyScalar(this.currSpeed),
@@ -579,6 +579,19 @@
 	    }
 	}
 
+	class Utils{
+	    static getCenterPoint(mesh) {
+	        let geometry = mesh.geometry;
+	        geometry.computeBoundingBox();   
+	        console.log(geometry);
+	        let center = geometry.boundingBox.getCenter(new THREE.Vector3());
+	        console.log(center);
+	        mesh.localToWorld( center );
+	        console.log(center);
+	        return center;
+	    }
+	}
+
 	exports.BasicCube = BasicCube;
 	exports.BasicSphere = BasicSphere;
 	exports.Character = Character;
@@ -591,6 +604,7 @@
 	exports.ObjectBase = ObjectBase;
 	exports.SceneManager = SceneManager;
 	exports.SceneSkeleton = SceneSkeleton;
+	exports.Utils = Utils;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

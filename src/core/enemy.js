@@ -8,10 +8,10 @@ export class Enemy extends ObjectBase{
     }){
         super(creation, settings)
 
-        this.speed = 2000
+        this.speed = 20
         this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}))
         this.mesh.add(this.model)
-        this.controls = new Controls(creation, camera, this.mesh)
+        this.controls = new Controls(creation, camera, this.model)
 
         // Add a line mesh to visulaize the velocity vectors length/direction
         // for testing
@@ -31,7 +31,7 @@ export class Enemy extends ObjectBase{
         this.model.quaternion.copy(this.body.quaternion)
     }
     update(){
-        this.currSpeed = this.speed*this.creation.tickDelta
+        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta)
         this.controls.update()
         this.body.applyForce(
             this.controls.getForce().multiplyScalar(this.currSpeed),

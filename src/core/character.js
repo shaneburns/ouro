@@ -9,7 +9,7 @@ export class Character extends ObjectBase{
         this.mesh.add(camera)
         camera.position.set(0, 5, -3)
 
-        this.speed = 5000
+        this.speed = 20
         this.model = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}))
         this.mesh.add(this.model)
         this.controls = new Controls(camera)
@@ -29,7 +29,7 @@ export class Character extends ObjectBase{
         this.model.quaternion.copy(this.body.quaternion)
     }
     update(){
-        this.currSpeed = this.speed*this.creation.tickDelta
+        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta)//this.speed*this.creation.tickDelta
         this.body.applyForce(
             this.controls.getForce().multiplyScalar(this.currSpeed),
             this.body.pointToWorldFrame(new CANNON.Vec3())

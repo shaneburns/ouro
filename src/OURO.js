@@ -10,3 +10,4 @@ export { Character } from './core/character.js';
 export { Controls } from './core/controls.js';
 export { Enemy } from './core/enemy.js';
 export { BasicSphere} from './objs/basicSphere.js';
+export { Utils } from './utils/utils.js'

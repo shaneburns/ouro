@@ -80,13 +80,12 @@ class Creation {
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
         this.renderer.shadowMap.enabled = settings.shadowMapEnabled ? settings.shadowMapEnabled : true;
         if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.BasicShadowMap;
-
         
 
 
-         this.mtlLoader = new THREE.MTLLoader() // Material Loader
-         this.objLoader = new THREE.OBJLoader() // Object Loader
-         this.texLoader = new THREE.TextureLoader // Texture Loader
+        // this.mtlLoader = new THREE.MTLLoader() // Material Loader
+        // this.objLoader = new THREE.OBJLoader() // Object Loader
+        // this.texLoader = new THREE.TextureLoader // Texture Loader
         this.collmeshlist = []; // Collidable Mesh List for Collision Detection // Should be in a manager
 
         // Clock and Tick setup
@@ -488,7 +487,7 @@ class Character extends ObjectBase{
         this.mesh.add(camera);
         camera.position.set(0, 5, -3);
 
-        this.speed = 5000;
+        this.speed = 20;
         this.model = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
         this.mesh.add(this.model);
         this.controls = new Controls(camera);
@@ -508,7 +507,7 @@ class Character extends ObjectBase{
         this.model.quaternion.copy(this.body.quaternion);
     }
     update(){
-        this.currSpeed = this.speed*this.creation.tickDelta;
+        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta);//this.speed*this.creation.tickDelta
         this.body.applyForce(
             this.controls.getForce().multiplyScalar(this.currSpeed),
             this.body.pointToWorldFrame(new CANNON.Vec3())
@@ -527,10 +526,10 @@ class Enemy extends ObjectBase{
     }){
         super(creation, settings);
 
-        this.speed = 2000;
+        this.speed = 20;
         this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
         this.mesh.add(this.model);
-        this.controls = new Controls(creation, camera, this.mesh);
+        this.controls = new Controls(creation, camera, this.model);
 
         // Add a line mesh to visulaize the velocity vectors length/direction
         // for testing
@@ -550,7 +549,7 @@ class Enemy extends ObjectBase{
         this.model.quaternion.copy(this.body.quaternion);
     }
     update(){
-        this.currSpeed = this.speed*this.creation.tickDelta;
+        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta);
         this.controls.update();
         this.body.applyForce(
             this.controls.getForce().multiplyScalar(this.currSpeed),
@@ -574,4 +573,17 @@ class BasicSphere extends ObjectBase{
     }
 }
 
-export { BasicCube, BasicSphere, Character, Controls, Creation, Enemy, EpisodeManager, EpisodeSkeleton, MenuManager, ObjectBase, SceneManager, SceneSkeleton };
+class Utils{
+    static getCenterPoint(mesh) {
+        let geometry = mesh.geometry;
+        geometry.computeBoundingBox();   
+        console.log(geometry);
+        let center = geometry.boundingBox.getCenter(new THREE.Vector3());
+        console.log(center);
+        mesh.localToWorld( center );
+        console.log(center);
+        return center;
+    }
+}
+
+export { BasicCube, BasicSphere, Character, Controls, Creation, Enemy, EpisodeManager, EpisodeSkeleton, MenuManager, ObjectBase, SceneManager, SceneSkeleton, Utils };
