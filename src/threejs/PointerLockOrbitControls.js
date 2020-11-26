@@ -12,8 +12,8 @@ THREE.PointerLockOrbitControls = function ( camera, target, timeElapsed, domElem
 
 	// Set to constrain the pitch of the camera
 	// Range is 0 to Math.PI radians
-	this.minPolarAngle = Math.PI / 2 - Math.PI/8; // radians
-	this.maxPolarAngle = Math.PI / 2 + Math.PI/8; // radians
+	this.minPolarAngle = Math.PI / 2 - Math.PI/12; // radians
+	this.maxPolarAngle = Math.PI / 2 + Math.PI/10; // radians
 
 	//
 	// internals
@@ -22,15 +22,15 @@ THREE.PointerLockOrbitControls = function ( camera, target, timeElapsed, domElem
 	var scope = this;
 
 	var subject = new THREE.Object3D()
-	subject.position.copy(OURO.Utils.getCenterPoint(target))
+	// subject.position.copy(OURO.Utils.getCenterPoint(target))
 	target.add(subject)
 
 	var changeEvent = { type: 'change' };
 	var lockEvent = { type: 'lock' };
 	var unlockEvent = { type: 'unlock' };
 	var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
-	var positionOffset = new THREE.Vector3(-4, 3, -5);
-	var lookAtOffset = new THREE.Vector3(0, 2, 20);
+	var positionOffset = new THREE.Vector3(-4, 3, -10);
+	var lookAtOffset = new THREE.Vector3(0, 0, 15);
 
 	var currentPostion = new THREE.Vector3();
 	var currentLookAt = new THREE.Vector3();
@@ -43,7 +43,7 @@ THREE.PointerLockOrbitControls = function ( camera, target, timeElapsed, domElem
 
 	this.updateTimeElapsed = function(newTimeElapsed){
 		currtimeElapsed = newTimeElapsed
-		subject.position.copy(OURO.Utils.getCenterPoint(target))
+		// subject.position.copy(OURO.Utils.getCenterPoint(target))
 	}
 	this.update = function(){
 		var idealOffset = calculateIdealOffset();
@@ -81,11 +81,11 @@ THREE.PointerLockOrbitControls = function ( camera, target, timeElapsed, domElem
 		euler.copy( subject.rotation );
 
 		euler.y -= movementX * .002;
-		euler.x += movementY * -.002;
+		euler.x -= movementY * -.002;
 
 		euler.x = Math.max( PI_2 - scope.maxPolarAngle, Math.min( PI_2 - scope.minPolarAngle, euler.x ) );
 		
-		subject.rotation.copy(euler)
+		subject.rotation.copy(euler);
 		
 		scope.dispatchEvent( changeEvent );
 

@@ -266,15 +266,17 @@
 	        // THREE
 	        this.scene = new THREE.Scene();
 	        this.scene.fog = new THREE.FogExp2( 0x202020, 0.025 );
-	        this.camera = new THREE.PerspectiveCamera(90, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
+	        this.camera = new THREE.PerspectiveCamera(55, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
 	        
 	        this.setAspect();
 	        window.addEventListener( 'resize', ()=>{
 	            this.setAspect();
 	        }, false );
 
+	        this.map = new THREE.Object3D();
+	        this.scene.add(this.map);
+
 	        // CANNON
-	        
 	        this.world = new CANNON.World();
 	        this.world.gravity.set(0, -9.82, 0);
 	        this.world.broadphase = new CANNON.NaiveBroadphase;
@@ -308,8 +310,8 @@
 	    }
 	    render(){
 	        this.update();
-	        this.world.step(1.0/60.0,this.creation.tickDelta,3);
-	        this.creation.renderer.render(this.scene, this.camera);
+	        this.world.step( 1.0/60.0, this.creation.tickDelta, 3 );
+	        this.creation.renderer.render( this.scene, this.camera );
 	    }
 
 	    // Dispose
@@ -319,6 +321,18 @@
 	        this.camera = null;
 	        this.render = null;
 	        
+	    }
+	}
+
+	class PlayableScene extends SceneSkeleton{
+	    constructor(creation, settings){
+	        super(creation, settings);
+	        this.player = null;
+	    }
+	    update(){
+	        let inversePos = this.player.body.position.clone();
+	        inversePos = inversePos.scale(-1);
+	        this.scene.position.set(inversePos.x, inversePos.y, inversePos.z);
 	    }
 	}
 
@@ -344,11 +358,29 @@
 	class BasicCube extends ObjectBase{
 	    constructor(creation, settings = {
 	        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 4}),
-	        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
+	        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshToonMaterial({ color: 0x50a8f0 }) )
+	    }){
+	        super(creation, settings);
+	    }
+	}
+
+	class BasicSphere extends ObjectBase{
+	    constructor(creation, settings = {
+	        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4}),
+	        mesh: new THREE.Mesh(new THREE.SphereBufferGeometry(1), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
 	    }){
 	        super(creation, settings);
 	        this.mesh.castShadow = true;
 	        this.mesh.recieveShadow = false;
+	    }
+	}
+
+	class BasicTorus extends ObjectBase{
+	    constructor(creation, settings = {
+	        body: new CANNON.Body({shape: CANNON.Trimesh.createTorus(5, 1, 16, 16), mass: 1}),
+	        mesh: new THREE.Mesh(new THREE.TorusBufferGeometry(5, 1, 16, 16), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
+	    }){
+	        super(creation, settings); 
 	    }
 	}
 
@@ -532,7 +564,7 @@
 	    }){
 	        super(creation, settings);
 
-	        this.speed = 20;
+	        this.speed = 30;
 	        this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
 	        this.mesh.add(this.model);
 	        this.controls = new Controls(creation, camera, this.model);
@@ -568,17 +600,6 @@
 	    }
 	}
 
-	class BasicSphere extends ObjectBase{
-	    constructor(creation, settings = {
-	        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4}),
-	        mesh: new THREE.Mesh(new THREE.SphereBufferGeometry(1), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
-	    }){
-	        super(creation, settings);
-	        this.mesh.castShadow = true;
-	        this.mesh.recieveShadow = false;
-	    }
-	}
-
 	class Utils{
 	    static getCenterPoint(mesh) {
 	        let geometry = mesh.geometry;
@@ -594,6 +615,7 @@
 
 	exports.BasicCube = BasicCube;
 	exports.BasicSphere = BasicSphere;
+	exports.BasicTorus = BasicTorus;
 	exports.Character = Character;
 	exports.Controls = Controls;
 	exports.Creation = Creation;
@@ -602,6 +624,7 @@
 	exports.EpisodeSkeleton = EpisodeSkeleton;
 	exports.MenuManager = MenuManager;
 	exports.ObjectBase = ObjectBase;
+	exports.PlayableScene = PlayableScene;
 	exports.SceneManager = SceneManager;
 	exports.SceneSkeleton = SceneSkeleton;
 	exports.Utils = Utils;
