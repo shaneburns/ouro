@@ -1,17 +1,21 @@
 import {ObjectBase} from './objectBase.js'
 import {Controls} from './controls.js'
+import { CoreSphere } from './../objs/coreSphere.js'
 
 export class Enemy extends ObjectBase{
     constructor(creation, camera, settings = {
-        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass:5}),
+        // body: new CANNON.Body({shape: new CANNON.Sphere(1), mass:5}),
         mesh: new THREE.Object3D()
     }){
+        settings.model = new CoreSphere(creation, {texture: './node_modules/ouro-engine/src/assets/textures/explosion.png', detail: 16})
+        settings.body = settings.model.body
         super(creation, settings)
 
+        this.model = settings.model
+        this.mesh.add(this.model.mesh)
+
         this.speed = 30
-        this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}))
-        this.mesh.add(this.model)
-        this.controls = new Controls(creation, camera, this.model)
+        this.controls = new Controls(creation, camera, this.model.mesh)
 
         // Add a line mesh to visulaize the velocity vectors length/direction
         // for testing
@@ -28,7 +32,7 @@ export class Enemy extends ObjectBase{
     updatePosition(){
         //super.updatePosition()
         this.mesh.position.copy(this.body.position)
-        this.model.quaternion.copy(this.body.quaternion)
+        this.model.mesh.quaternion.copy(this.body.quaternion)
     }
     update(){
         this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta)
@@ -37,6 +41,8 @@ export class Enemy extends ObjectBase{
             this.controls.getForce().multiplyScalar(this.currSpeed),
             this.body.pointToWorldFrame(new CANNON.Vec3())
         )
+
+        this.model.update()
 
         this.vMagLine.geom.verticesNeedUpdate = true
 

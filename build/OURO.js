@@ -372,7 +372,7 @@
 	class BasicSphere extends ObjectBase{
 	    constructor(creation, settings = {
 	        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4}),
-	        mesh: new THREE.Mesh(new THREE.SphereBufferGeometry(1), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
+	        mesh: new THREE.Mesh(new THREE.SphereBufferGeometry(1, 64, 64), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
 	    }){
 	        super(creation, settings);
 	        this.mesh.castShadow = true;
@@ -386,6 +386,48 @@
 	        mesh: new THREE.Mesh(new THREE.TorusBufferGeometry(5, 1, 16, 16), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
 	    }){
 	        super(creation, settings); 
+	    }
+	}
+
+	class CoreSphere extends ObjectBase{
+	    constructor(creation, settings){
+	        settings.texture = creation.texLoader.load(settings.texture ? settings.texture : "./../assets/textures/explosion.png");
+	        settings.complexity = settings.detail ?? 4;
+	        settings.timeScale = settings.timeScale ?? 0.025;
+	        settings.turbScale = 19.0;
+	        settings.coreMat = new THREE.ShaderMaterial({
+	            uniforms: {
+	                tExplosion: { type: "t", value: settings.texture },
+	                time: {  type: "f",  value: 0.0 },
+	                turbScale: {type: "f", value: settings.turbScale}
+	            },
+	            vertexShader: coreVShader(),
+	            fragmentShader: coreFShader()
+	        });
+	        settings.body = new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4});
+	        settings.mesh = new THREE.Mesh( new THREE.IcosahedronBufferGeometry( 1.2, settings.complexity ), settings.coreMat );
+	        super(creation, settings);
+
+	        this.texture = settings.texture.dispose();
+	        this.complexity = settings.complexity;
+	        this.timeScale = settings.timeScale;
+	        this.turbScale = settings.turbScale;
+	        this.coreMat = settings.coreMat;
+	    }
+	    updateTime(val){
+	        this.coreMat.uniforms[ 'time' ].value = val;
+	    }
+	    updateTimeScale(val){
+	        this.timeScale = val;
+	    }
+	    updateTexture(t){
+	        this.coreMat.uniforms['tExplosion'].value = this.texture = mg.tex.load(t);
+	    }
+	    updateTurbScale(val){
+	        this.coreMat.uniforms['turbScale'].value = this.turbScale = val;
+	    }
+	    update(){
+	        this.updateTime(this.creation.tick * this.timeScale);
 	    }
 	}
 
@@ -564,15 +606,18 @@
 
 	class Enemy extends ObjectBase{
 	    constructor(creation, camera, settings = {
-	        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass:5}),
+	        // body: new CANNON.Body({shape: new CANNON.Sphere(1), mass:5}),
 	        mesh: new THREE.Object3D()
 	    }){
+	        settings.model = new CoreSphere(creation, {texture: './node_modules/ouro-engine/src/assets/textures/explosion.png', detail: 16});
+	        settings.body = settings.model.body;
 	        super(creation, settings);
 
+	        this.model = settings.model;
+	        this.mesh.add(this.model.mesh);
+
 	        this.speed = 30;
-	        this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
-	        this.mesh.add(this.model);
-	        this.controls = new Controls(creation, camera, this.model);
+	        this.controls = new Controls(creation, camera, this.model.mesh);
 
 	        // Add a line mesh to visulaize the velocity vectors length/direction
 	        // for testing
@@ -589,7 +634,7 @@
 	    updatePosition(){
 	        //super.updatePosition()
 	        this.mesh.position.copy(this.body.position);
-	        this.model.quaternion.copy(this.body.quaternion);
+	        this.model.mesh.quaternion.copy(this.body.quaternion);
 	    }
 	    update(){
 	        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta);
@@ -598,6 +643,8 @@
 	            this.controls.getForce().multiplyScalar(this.currSpeed),
 	            this.body.pointToWorldFrame(new CANNON.Vec3())
 	        );
+
+	        this.model.update();
 
 	        this.vMagLine.geom.verticesNeedUpdate = true;
 
@@ -623,6 +670,7 @@
 	exports.BasicTorus = BasicTorus;
 	exports.Character = Character;
 	exports.Controls = Controls;
+	exports.CoreSphere = CoreSphere;
 	exports.Creation = Creation;
 	exports.Enemy = Enemy;
 	exports.EpisodeManager = EpisodeManager;
