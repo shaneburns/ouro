@@ -16,9 +16,13 @@ export class CoreSphere extends ObjectBase{
             fragmentShader: coreFShader()
         })
         settings.body = new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4})
-        settings.mesh = new THREE.Mesh( new THREE.IcosahedronBufferGeometry( 1.2, settings.complexity ), settings.coreMat )
+        settings.model = new THREE.Mesh( new THREE.IcosahedronBufferGeometry( .9, settings.complexity ), settings.coreMat )
+        settings.mesh = new THREE.Object3D()
         super(creation, settings);
 
+        this.model = settings.model
+        this.mesh.add(this.model)
+        this.model.position.x = .35 // offset x axis to match this.body position 
         this.texture = settings.texture.dispose()
         this.complexity = settings.complexity
         this.timeScale = settings.timeScale
