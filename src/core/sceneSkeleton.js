@@ -6,20 +6,22 @@
 */
 class SceneSkeleton {
     constructor(creation, settings = {}){
-        this.creation = creation;
+        this.creation = creation
 
         // THREE
-        this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2( 0x202020, 0.025 );
-        this.camera = new THREE.PerspectiveCamera(90, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
+        this.scene = new THREE.Scene()
+        this.scene.fog = new THREE.FogExp2( 0x202020, 0.025 )
+        this.camera = new THREE.PerspectiveCamera(55, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000)
         
-        this.setAspect();
+        this.setAspect()
         window.addEventListener( 'resize', ()=>{
-            this.setAspect();
+            this.setAspect()
         }, false );
 
+        this.map = new THREE.Object3D()
+        this.scene.add(this.map)
+
         // CANNON
-        
         this.world = new CANNON.World()
         this.world.gravity.set(0, -9.82, 0)
         this.world.broadphase = new CANNON.NaiveBroadphase
@@ -46,25 +48,25 @@ class SceneSkeleton {
     }
 
     setAspect(){
-        this.camera.aspect = this.creation.canvas.clientWidth/ this.creation.canvas.clientHeight;
-        this.camera.updateProjectionMatrix();
+        this.camera.aspect = this.creation.canvas.clientWidth/ this.creation.canvas.clientHeight
+        this.camera.updateProjectionMatrix()
 
-        this.creation.renderer.setSize( this.creation.canvas.clientWidth, this.creation.canvas.clientHeight );
+        this.creation.renderer.setSize( this.creation.canvas.clientWidth, this.creation.canvas.clientHeight )
     }
     render(){
-        this.update();
-        this.world.step(1.0/60.0,this.creation.tickDelta,3);
-        this.creation.renderer.render(this.scene, this.camera);
+        this.update()
+        this.world.step( 1.0/60.0, this.creation.tickDelta, 3 )
+        this.creation.renderer.render( this.scene, this.camera )
     }
 
     // Dispose
     dispose(){
         // dereference everything
-        this.scene = null;
-        this.camera = null;
-        this.render = null;
+        this.scene = null
+        this.camera = null
+        this.render = null
         
     }
 }
 
-export {SceneSkeleton};
+export {SceneSkeleton}

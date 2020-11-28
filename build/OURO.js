@@ -86,12 +86,16 @@
 	        this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
 	        this.renderer.shadowMap.enabled = settings.shadowMapEnabled ? settings.shadowMapEnabled : true;
 	        if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.BasicShadowMap;
-	        
+	        this.renderer.setPixelRatio( window.devicePixelRatio );
+	        //renderer.setSize( window.innerWidth, window.innerHeight );
+	        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+	        this.renderer.toneMappingExposure = 1;
+	        this.renderer.outputEncoding = THREE.sRGBEncoding;
 
 
-	        // this.mtlLoader = new THREE.MTLLoader() // Material Loader
-	        // this.objLoader = new THREE.OBJLoader() // Object Loader
-	        // this.texLoader = new THREE.TextureLoader // Texture Loader
+	        this.mtlLoader = new THREE.MTLLoader(); // Material Loader
+	        this.objLoader = new THREE.OBJLoader(); // Object Loader
+	        this.texLoader = new THREE.TextureLoader; // Texture Loader
 	        this.collmeshlist = []; // Collidable Mesh List for Collision Detection // Should be in a manager
 
 	        // Clock and Tick setup
@@ -266,15 +270,17 @@
 	        // THREE
 	        this.scene = new THREE.Scene();
 	        this.scene.fog = new THREE.FogExp2( 0x202020, 0.025 );
-	        this.camera = new THREE.PerspectiveCamera(90, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
+	        this.camera = new THREE.PerspectiveCamera(55, this.creation.canvas.clientWidth/this.creation.canvas.clientHeight, 0.1, 1000);
 	        
 	        this.setAspect();
 	        window.addEventListener( 'resize', ()=>{
 	            this.setAspect();
 	        }, false );
 
+	        this.map = new THREE.Object3D();
+	        this.scene.add(this.map);
+
 	        // CANNON
-	        
 	        this.world = new CANNON.World();
 	        this.world.gravity.set(0, -9.82, 0);
 	        this.world.broadphase = new CANNON.NaiveBroadphase;
@@ -308,8 +314,8 @@
 	    }
 	    render(){
 	        this.update();
-	        this.world.step(1.0/60.0,this.creation.tickDelta,3);
-	        this.creation.renderer.render(this.scene, this.camera);
+	        this.world.step( 1.0/60.0, this.creation.tickDelta, 3 );
+	        this.creation.renderer.render( this.scene, this.camera );
 	    }
 
 	    // Dispose
@@ -319,6 +325,19 @@
 	        this.camera = null;
 	        this.render = null;
 	        
+	    }
+	}
+
+	class PlayableScene extends SceneSkeleton{
+	    constructor(creation, settings){
+	        super(creation, settings);
+	        this.player = null;
+	    }
+	    update(){
+	        let t = 1.0 - Math.pow(0.001, this.creation.tickDelta);
+	        let inversePos = this.player.body.position.clone();
+	        inversePos = inversePos.scale(-1);
+	        this.scene.position.lerp(new THREE.Vector3(inversePos.x, inversePos.y, inversePos.z), t);
 	    }
 	}
 
@@ -344,11 +363,75 @@
 	class BasicCube extends ObjectBase{
 	    constructor(creation, settings = {
 	        body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 4}),
-	        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
+	        mesh: new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshToonMaterial({ color: 0x50a8f0 }) )
+	    }){
+	        super(creation, settings);
+	    }
+	}
+
+	class BasicSphere extends ObjectBase{
+	    constructor(creation, settings = {
+	        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4}),
+	        mesh: new THREE.Mesh(new THREE.SphereBufferGeometry(1, 64, 64), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
 	    }){
 	        super(creation, settings);
 	        this.mesh.castShadow = true;
 	        this.mesh.recieveShadow = false;
+	    }
+	}
+
+	class BasicTorus extends ObjectBase{
+	    constructor(creation, settings = {
+	        body: new CANNON.Body({shape: CANNON.Trimesh.createTorus(5, 1, 16, 16), mass: 1}),
+	        mesh: new THREE.Mesh(new THREE.TorusBufferGeometry(5, 1, 16, 16), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
+	    }){
+	        super(creation, settings); 
+	    }
+	}
+
+	class CoreSphere extends ObjectBase{
+	    constructor(creation, settings){
+	        settings.texture = creation.texLoader.load(settings.texture ? settings.texture : "./../assets/textures/explosion.png");
+	        settings.complexity = settings.detail ?? 4;
+	        settings.timeScale = settings.timeScale ?? 0.025;
+	        settings.turbScale = 19.0;
+	        settings.coreMat = new THREE.ShaderMaterial({
+	            uniforms: {
+	                tExplosion: { type: "t", value: settings.texture },
+	                time: {  type: "f",  value: 0.0 },
+	                turbScale: {type: "f", value: settings.turbScale}
+	            },
+	            vertexShader: coreVShader(),
+	            fragmentShader: coreFShader()
+	        });
+	        settings.body = new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4});
+	        settings.model = new THREE.Mesh( new THREE.IcosahedronBufferGeometry( .9, settings.complexity ), settings.coreMat );
+	        settings.mesh = new THREE.Object3D();
+	        super(creation, settings);
+
+	        this.model = settings.model;
+	        this.mesh.add(this.model);
+	        this.model.position.x = .35;
+	        this.texture = settings.texture.dispose();
+	        this.complexity = settings.complexity;
+	        this.timeScale = settings.timeScale;
+	        this.turbScale = settings.turbScale;
+	        this.coreMat = settings.coreMat;
+	    }
+	    updateTime(val){
+	        this.coreMat.uniforms[ 'time' ].value = val;
+	    }
+	    updateTimeScale(val){
+	        this.timeScale = val;
+	    }
+	    updateTexture(t){
+	        this.coreMat.uniforms['tExplosion'].value = this.texture = mg.tex.load(t);
+	    }
+	    updateTurbScale(val){
+	        this.coreMat.uniforms['turbScale'].value = this.turbScale = val;
+	    }
+	    update(){
+	        this.updateTime(this.creation.tick * this.timeScale);
 	    }
 	}
 
@@ -493,7 +576,7 @@
 	        this.mesh.add(camera);
 	        camera.position.set(0, 5, -3);
 
-	        this.speed = 5000;
+	        this.speed = 20;
 	        this.model = new THREE.Mesh(new THREE.BoxBufferGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
 	        this.mesh.add(this.model);
 	        this.controls = new Controls(camera);
@@ -513,7 +596,7 @@
 	        this.model.quaternion.copy(this.body.quaternion);
 	    }
 	    update(){
-	        this.currSpeed = this.speed*this.creation.tickDelta;
+	        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta);//this.speed*this.creation.tickDelta
 	        this.body.applyForce(
 	            this.controls.getForce().multiplyScalar(this.currSpeed),
 	            this.body.pointToWorldFrame(new CANNON.Vec3())
@@ -527,15 +610,18 @@
 
 	class Enemy extends ObjectBase{
 	    constructor(creation, camera, settings = {
-	        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass:5}),
+	        // body: new CANNON.Body({shape: new CANNON.Sphere(1), mass:5}),
 	        mesh: new THREE.Object3D()
 	    }){
+	        settings.model = new CoreSphere(creation, {texture: './node_modules/ouro-engine/src/assets/textures/explosion.png', detail: 16});
+	        settings.body = settings.model.body;
 	        super(creation, settings);
 
-	        this.speed = 2000;
-	        this.model = new THREE.Mesh(new THREE.SphereBufferGeometry(1, 10, 10), new THREE.MeshLambertMaterial({color: 0xFFFFFF}));
-	        this.mesh.add(this.model);
-	        this.controls = new Controls(creation, camera, this.mesh);
+	        this.model = settings.model;
+	        this.mesh.add(this.model.mesh);
+
+	        this.speed = 30;
+	        this.controls = new Controls(creation, camera, this.model.mesh);
 
 	        // Add a line mesh to visulaize the velocity vectors length/direction
 	        // for testing
@@ -552,15 +638,17 @@
 	    updatePosition(){
 	        //super.updatePosition()
 	        this.mesh.position.copy(this.body.position);
-	        this.model.quaternion.copy(this.body.quaternion);
+	        this.model.mesh.quaternion.copy(this.body.quaternion);
 	    }
 	    update(){
-	        this.currSpeed = this.speed*this.creation.tickDelta;
+	        this.currSpeed = this.speed - Math.pow(0.001, this.creation.tickDelta);
 	        this.controls.update();
 	        this.body.applyForce(
 	            this.controls.getForce().multiplyScalar(this.currSpeed),
 	            this.body.pointToWorldFrame(new CANNON.Vec3())
 	        );
+
+	        this.model.update();
 
 	        this.vMagLine.geom.verticesNeedUpdate = true;
 
@@ -568,29 +656,35 @@
 	    }
 	}
 
-	class BasicSphere extends ObjectBase{
-	    constructor(creation, settings = {
-	        body: new CANNON.Body({shape: new CANNON.Sphere(1), mass: 4}),
-	        mesh: new THREE.Mesh(new THREE.SphereBufferGeometry(1), new THREE.MeshToonMaterial({color: 0x50a8f0}) )
-	    }){
-	        super(creation, settings);
-	        this.mesh.castShadow = true;
-	        this.mesh.recieveShadow = false;
+	class Utils{
+	    static getCenterPoint(mesh) {
+	        let geometry = mesh.geometry;
+	        geometry.computeBoundingBox();   
+	        console.log(geometry);
+	        let center = geometry.boundingBox.getCenter(new THREE.Vector3());
+	        console.log(center);
+	        mesh.localToWorld( center );
+	        console.log(center);
+	        return center;
 	    }
 	}
 
 	exports.BasicCube = BasicCube;
 	exports.BasicSphere = BasicSphere;
+	exports.BasicTorus = BasicTorus;
 	exports.Character = Character;
 	exports.Controls = Controls;
+	exports.CoreSphere = CoreSphere;
 	exports.Creation = Creation;
 	exports.Enemy = Enemy;
 	exports.EpisodeManager = EpisodeManager;
 	exports.EpisodeSkeleton = EpisodeSkeleton;
 	exports.MenuManager = MenuManager;
 	exports.ObjectBase = ObjectBase;
+	exports.PlayableScene = PlayableScene;
 	exports.SceneManager = SceneManager;
 	exports.SceneSkeleton = SceneSkeleton;
+	exports.Utils = Utils;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
