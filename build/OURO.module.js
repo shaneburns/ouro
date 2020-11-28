@@ -1,3 +1,5 @@
+
+
 class MenuManager {
 
 }
@@ -84,9 +86,9 @@ class Creation {
         
 
 
-         this.mtlLoader = new THREE.MTLLoader() // Material Loader
-         this.objLoader = new THREE.OBJLoader() // Object Loader
-         this.texLoader = new THREE.TextureLoader // Texture Loader
+        this.mtlLoader = new THREE.MTLLoader() // Material Loader
+        this.objLoader = new THREE.OBJLoader() // Object Loader
+        this.texLoader = new THREE.TextureLoader // Texture Loader
         this.collmeshlist = []; // Collidable Mesh List for Collision Detection // Should be in a manager
 
         // Clock and Tick setup
@@ -573,5 +575,8 @@ class BasicSphere extends ObjectBase{
         this.mesh.recieveShadow = false;
     }
 }
+
+
+
 
 export { BasicCube, BasicSphere, Character, Controls, Creation, Enemy, EpisodeManager, EpisodeSkeleton, MenuManager, ObjectBase, SceneManager, SceneSkeleton };
