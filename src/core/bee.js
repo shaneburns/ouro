@@ -39,7 +39,7 @@ export class Bee extends Vehicle{
 
 		this.currentTime = 0; // tracks the current time of an action
 		this.deltaTime = 0; // the current time delta value
-		this.position = new Vector3(0, 1, 0)
+		//this.position = new Vector3(0, 1, 0)
 
 		this.MAX_FATIGUE = 3; // the girl needs to rest if this amount of fatigue is reached
 

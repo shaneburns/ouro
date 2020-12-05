@@ -10153,22 +10153,23 @@
 
 			// determine if the bee should perform a left or right turn in order to face
 			// the collectible
-			console.log(this.localPosition);
+			
 
 			owner.updateWorldMatrix();
-			console.log(owner.worldMatrix);
-			console.log('/////////////');
+			
 			owner.worldMatrix.getInverse(this.inverseMatrix );
-			console.log(this.inverseMatrix);
+			
 			this.localPosition.copy( owner.currentTarget.position ).applyMatrix4( this.inverseMatrix );
-			console.log(this.localPosition);
+			
 			//this.turn.reset().fadeIn( owner.crossFadeDuration );
+			console.log("Owner Activation ended");
 
 		}
 
 		execute() {
 
 			const owner = this.owner;
+			console.log("Find Next Collectible Executing...");
 
 			if ( owner.currentTarget !== null ) {
 
@@ -10183,11 +10184,13 @@
 				this.status = Goal.STATUS.FAILED;
 
 			}
+			console.log("Find Next Collectible Executed");
 
 		}
 
 		terminate() {
 			const owner = this.owner;
+			console.log("Find Next Collectible Terminated");
 
 	    		
 
@@ -10201,7 +10204,8 @@
 
 		constructor( owner ) {
 
-	        super(owner);
+			super(owner);
+			console.log("Seek To Collectible Goal constructing");
 	        
 	        this.SEEK = 'SEEK';
 	        this.PICK_UP = 'PICK UP';
@@ -10220,6 +10224,7 @@
 	    activate() {
 
 			const owner = this.owner;
+			console.log("seeking collectible activating");
 
 			// update UI
 
@@ -10240,10 +10245,13 @@
 			}
 
 			//
+			
+			console.log("seeking collectible activated");
 
 
 		}
 		execute() {
+			console.log("seeking collectible executing");
 
 			if ( this.active() ) {
 
@@ -10260,10 +10268,12 @@
 				// adjust animation speed based on the actual velocity of the bee
 
 			}
+			console.log("seeking collectible executed");
 
 		}
 
 		terminate() {
+			console.log("seeking collectible terminating");
 
 			const arriveBehavior = this.owner.steering.behaviors[ 0 ];
 			arriveBehavior.active = false;
@@ -10272,6 +10282,7 @@
 			//
 
 			const owner = this.owner;
+			console.log("seeking collectible terminated");
 
 			//stop bee flying
 
@@ -10283,7 +10294,9 @@
 
 		constructor( owner ) {
 
-	        super(owner);
+			super(owner);
+			
+			console.log("Picking up collectible goal constructing");
 	        this.REST = 'REST';
 	        this.GATHER = 'GATHER';
 	        this.FIND_NEXT = 'FIND NEXT';
@@ -10306,24 +10319,35 @@
 		activate() {
 
 			const owner = this.owner;
+			
+			console.log("Picking up collectible goal activating");
 
 			// owner.ui.currentSubgoal.textContent = this.PICK_UP;
 
-			const gather = owner.animations.get( this.GATHER );
-			gather.reset().fadeIn( owner.crossFadeDuration );
+			//const gather = owner.animations.get( this.GATHER );
+			//gather.reset().fadeIn( owner.crossFadeDuration );
+			
+			console.log("Picking up collectible goal activated");
 
 		}
 
 		execute() {
 
 			const owner = this.owner;
-			owner.currentTime += owner.tickDelta;
+			
+			console.log("Picking up collectible goal executing");
+			owner.currentTime += owner.deltaTime;
+
+			console.log("current time = "+ owner.currentTime);
+			console.log("pickupDuration = " + owner.pickUpDuration);
 
 			if ( owner.currentTime >= owner.pickUpDuration ) {
 
-	            this.status = Goal.STATUS.COMPLETED;
+				this.status = Goal.STATUS.COMPLETED;
 	            
 			} else if ( owner.currentTime >= this.collectibleRemoveTimeout ) {
+				
+				
 
 				if ( owner.currentTarget !== null ) {
 
@@ -10333,14 +10357,21 @@
 				}
 			}
 
+			
+			console.log("Picking up collectible goal executed");
+
 		}
 
 		terminate() {
 
 			const owner = this.owner;
+			
+			console.log("Picking up collectible goal terminating");
 
 			owner.currentTime = 0;
 			owner.fatigueLevel ++;
+			
+			console.log("Picking up collectible goal terminated");
 
 			
 
@@ -10351,6 +10382,7 @@
 	class GatherEvaluator extends GoalEvaluator {
 
 		calculateDesirability() {
+			console.log("gathergoal desirability = 0.5");
 
 			return 0.5;
 
@@ -10359,13 +10391,16 @@
 		setGoal( bee ) {
 
 			const currentSubgoal = bee.brain.currentSubgoal();
+			console.log("gatherGoal setting in gather evaluator");
 
 			if ( ( currentSubgoal instanceof GatherGoal ) === false ) {
 
 				bee.brain.clearSubgoals();
+				console.log("clearing subgoals since current subgoal is false");
 				
 
 				bee.brain.addSubgoal( new GatherGoal( bee ) );
+				console.log("new gathergoal added to subgoal");
 
 			}
 
@@ -10377,6 +10412,7 @@
 	    
 	    constructor(owner){
 	        super(owner);
+	        console.log("RestGoal constructing");
 	        
 	        this.REST = 'REST';
 	        
@@ -10386,40 +10422,54 @@
 
 	    //Activate
 	    activate() {
+	        console.log("RestGoal activated");
 	        // this.owner.ui.currentGoal.textContent = this.REST;
 	        // this.owner.ui.currentSubgoal.textContent = this.PLACEHOLDER;
 	    }
 
 	    //Execute
 	    execute() {
-	        this.owner.currentTime += this.owner.tickDelta;
-	        if (this.owner.currentTime >= this.owner.restDuration){
+	        const owner = this.owner;
+	        
+	        console.log("RestGoal executing");
+	        owner.currentTime += owner.deltaTime;
+	        console.log("current time = "+owner.currentTime);
+	        console.log("rest duration = "+owner.restDuration);
+	        if (owner.currentTime >= owner.restDuration){
 	            this.status = Goal.STATUS.COMPLETED;
+	            console.log("REST GOAL COMPLETED = "+ this.status);
 	        }
+	        console.log("RestGoal executed");
 
 	    }
 
 	    //Terminate
 	    terminate() {
-	        this.owner.currentTime = 0;
-	        this.fatigueLevel = 0;
+	        const owner = this.owner;
+	        owner.currentTime = 0;
+	        owner.fatigueLevel = 0;
 	    }
 	}
 
 	class RestEvaluator extends GoalEvaluator{
 
 	    calculateDesirability( bee ) {
+	        console.log("calculating Rest desirability ");
+	        
+	        console.log("rest desireability = bee.tired = " + bee.tired());
 	        return (bee.tired() === true ) ? 1 : 0;
 	    }
 
 	    setGoal( bee ){
 	        const currentSubgoal = bee.brain.currentSubgoal();
+	        console.log("setting rest Goal");
 
 			if ( ( currentSubgoal instanceof RestGoal ) === false ) {
 
 				bee.brain.clearSubgoals();
 
-				bee.brain.addSubgoal( new RestGoal( bee ) );
+	            bee.brain.addSubgoal( new RestGoal( bee ) );
+	            console.log("subgoals cleared and new subgoal = restGoal");
 
 			}
 
@@ -10461,7 +10511,7 @@
 
 			this.currentTime = 0; // tracks the current time of an action
 			this.deltaTime = 0; // the current time delta value
-			this.position = new Vector3(0, 1, 0);
+			//this.position = new Vector3(0, 1, 0)
 
 			this.MAX_FATIGUE = 3; // the girl needs to rest if this amount of fatigue is reached
 
