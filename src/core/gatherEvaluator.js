@@ -16,6 +16,7 @@ export class GatherEvaluator extends GoalEvaluator {
 		if ( ( currentSubgoal instanceof GatherGoal ) === false ) {
 
 			bee.brain.clearSubgoals();
+			
 
 			bee.brain.addSubgoal( new GatherGoal( bee ) );
 

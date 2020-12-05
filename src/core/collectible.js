@@ -1,4 +1,4 @@
-import {GameEntity} from './../../node_modules/yuka/build/yuka.module.js'
+import {GameEntity, Vehicle} from './../../node_modules/yuka/build/yuka.module.js'
 
 export class Collectible extends GameEntity {
 
@@ -9,6 +9,11 @@ export class Collectible extends GameEntity {
 
 		if ( this.position.x < 1 && this.position.x > - 1 ) this.position.x += 1;
 		if ( this.position.z < 1 && this.position.y > - 1 ) this.position.z += 1;
+
+		//this.Collectible = new Vehicle()
+
+
+
 
 	}
 

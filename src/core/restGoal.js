@@ -2,9 +2,9 @@ import {Goal} from './../../node_modules/yuka/build/yuka.module.js'
 
 export class RestGoal extends Goal{
     
-    constructor(creation){
-        super()
-        this.creation = creation;
+    constructor(owner){
+        super(owner)
+        
         this.REST = 'REST';
         
         this.PLACEHOLDER = '-';
@@ -13,14 +13,14 @@ export class RestGoal extends Goal{
 
     //Activate
     activate() {
-        this.creation.ui.currentGoal.textContent = this.REST;
-        this.creation.ui.currentSubgoal.textContent = this.PLACEHOLDER;
+        // this.owner.ui.currentGoal.textContent = this.REST;
+        // this.owner.ui.currentSubgoal.textContent = this.PLACEHOLDER;
     }
 
     //Execute
     execute() {
-        this.creation.currentTime += this.creation.tickDelta
-        if (this.creation.currentTime >= this.creation.restDuration){
+        this.owner.currentTime += this.owner.tickDelta
+        if (this.owner.currentTime >= this.owner.restDuration){
             this.status = Goal.STATUS.COMPLETED;
         }
 
@@ -28,7 +28,7 @@ export class RestGoal extends Goal{
 
     //Terminate
     terminate() {
-        this.creation.currentTime = 0;
+        this.owner.currentTime = 0;
         this.fatigueLevel = 0;
     }
 }

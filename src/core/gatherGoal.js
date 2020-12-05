@@ -1,17 +1,23 @@
 import { CompositeGoal, Goal }from './../../node_modules/yuka/build/yuka.module.js'
-
+//const inversyMatrix = new YUKA.Matrix4()
 export class GatherGoal extends CompositeGoal{
-    constructor(creation){
-        super()
-        this.creation = creation;
-        this.GATHER = 'GATHER';
+    constructor(owner){
+        super(owner)
+		
+		this.GATHER = 'GATHER';
+		
+	//	this.inverseMatrix = new YUKA.Matrix4();
+		this.localPosition = new YUKA.Vector3();
+		
     }
 
     activate(){
-        this.ui.currentGoal.textContent = this.GATHER;
-        this.addSubgoal( new FindNextCollectibleGoal( this.creation ) );
-        this.addSubgoal( new SeekToCollectibleGoal( this.creation ) );
-		this.addSubgoal( new PickUpCollectibleGoal( this.creation ) );
+		//this.ui.currentGoal.textContent = this.GATHER;
+		console.log('INVERSEmat');
+		//console.log(this.inverseMatrix);
+        this.addSubgoal( new FindNextCollectibleGoal( this.owner ) );
+        this.addSubgoal( new SeekToCollectibleGoal( this.owner ) );
+		this.addSubgoal( new PickUpCollectibleGoal( this.owner ) );
 	}
 
 	execute() {
@@ -27,43 +33,50 @@ export class GatherGoal extends CompositeGoal{
 //Find next collectible Goal
 class FindNextCollectibleGoal extends Goal {
 
-	constructor( creation ) {
+	constructor( owner ) {
 
-        super();
-        this.creation = creation;
-        this.FIND_NEXT = 'FIND NEXT';
+		super(owner);
+		
+		this.FIND_NEXT = 'FIND NEXT';
+		console.log('INVERSEmatty');
+		//console.log(inversyMatrix);
 
-        this.inverseMatrix = new Matrix4();
-        this.localPosition = new Vector3();
+		this.inverseMatrix = new YUKA.Matrix4();
+		console.log(new YUKA.Matrix4());
+		console.log('///////////////////////');
+        this.localPosition = new YUKA.Vector3();
 		this.animationId = null;
+		console.log('Owner Constructor');
+		console.log(this.owner);
 
 	}
 
 	activate() {
-
-		const creation = this.creation;
+		const owner = this.owner;
+		console.log('Owner Activation');
+		console.log(owner);
 
 		// update UI
 
-		creation.ui.currentSubgoal.textContent = this.FIND_NEXT;
+		// owner.ui.currentSubgoal.textContent = this.FIND_NEXT;
 
 		// select closest collectible
 
-		const entities = creation.manager.entities;
+		const entities = owner.manager.entities;
 		let minDistance = Infinity;
 
 		for ( let i = 0, l = entities.length; i < l; i ++ ) {
 
 			const entity = entities[ i ];
 
-			if ( entity !== creation ) {
+			if ( entity !== owner ) {
 
-				const squaredDistance = creation.position.squaredDistanceTo( entity.position );
+				const squaredDistance = owner.position.squaredDistanceTo( entity.position );
 
 				if ( squaredDistance < minDistance ) {
 
 					minDistance = squaredDistance;
-					creation.currentTarget = entity;
+					owner.currentTarget = entity;
 
 				}
 
@@ -73,21 +86,26 @@ class FindNextCollectibleGoal extends Goal {
 
 		// determine if the bee should perform a left or right turn in order to face
 		// the collectible
+		console.log(this.localPosition)
 
-		creation.updateWorldMatrix();
-		creation.worldMatrix.getInverse( inverseMatrix );
-		localPosition.copy( creation.currentTarget.position ).applyMatrix4( inverseMatrix );
-		turn.reset().fadeIn( creation.crossFadeDuration );
+		owner.updateWorldMatrix();
+		console.log(owner.worldMatrix);
+		console.log('/////////////')
+		owner.worldMatrix.getInverse(this.inverseMatrix );
+		console.log(this.inverseMatrix);
+		this.localPosition.copy( owner.currentTarget.position ).applyMatrix4( this.inverseMatrix );
+		console.log(this.localPosition);
+		//this.turn.reset().fadeIn( owner.crossFadeDuration );
 
 	}
 
 	execute() {
 
-		const creation = this.creation;
+		const owner = this.owner;
 
-		if ( creation.currentTarget !== null ) {
+		if ( owner.currentTarget !== null ) {
 
-			if ( creation.rotateTo( creation.currentTarget.position, creation.deltaTime ) === true ) {
+			if ( owner.rotateTo( owner.currentTarget.position, owner.deltaTime ) === true ) {
 
 				this.status = Goal.STATUS.COMPLETED;
 
@@ -102,7 +120,7 @@ class FindNextCollectibleGoal extends Goal {
 	}
 
 	terminate() {
-		const creation = this.creation;
+		const owner = this.owner;
 
     		
 
@@ -114,10 +132,9 @@ class FindNextCollectibleGoal extends Goal {
 //Seek the goal
 class SeekToCollectibleGoal extends Goal {
 
-	constructor( creation ) {
+	constructor( owner ) {
 
-        super();
-        this.creation = creation
+        super(owner);
         
         this.SEEK = 'SEEK';
         this.PICK_UP = 'PICK UP';
@@ -128,25 +145,25 @@ class SeekToCollectibleGoal extends Goal {
         this.LEFT_TURN = 'LEFT_TURN';
         this.IDLE = 'IDLE';
 
-        this.inverseMatrix = new Matrix4();
-        this.localPosition = new Vector3();
+        this.inverseMatrix = new YUKA.Matrix4();
+        this.localPosition = new YUKA.Vector3();
 		
 
     }
     activate() {
 
-		const creation = this.creation;
+		const owner = this.owner;
 
 		// update UI
 
-		creation.ui.currentSubgoal.textContent = this.SEEK;
+		// owner.ui.currentSubgoal.textContent = this.SEEK;
 
 		//
 
-		if ( creation.currentTarget !== null ) {
+		if ( owner.currentTarget !== null ) {
 
-			const arriveBehavior = creation.steering.behaviors[ 0 ];
-			arriveBehavior.target = creation.currentTarget.position;
+			const arriveBehavior = owner.steering.behaviors[ 0 ];
+			arriveBehavior.target = owner.currentTarget.position;
 			arriveBehavior.active = true;
 
 		} else {
@@ -163,9 +180,9 @@ class SeekToCollectibleGoal extends Goal {
 
 		if ( this.active() ) {
 
-			const creation = this.creation;
+			const owner = this.owner;
 
-			const squaredDistance = creation.position.squaredDistanceTo( creation.currentTarget.position );
+			const squaredDistance = owner.position.squaredDistanceTo( owner.currentTarget.position );
 
 			if ( squaredDistance < 0.25 ) {
 
@@ -181,13 +198,13 @@ class SeekToCollectibleGoal extends Goal {
 
 	terminate() {
 
-		const arriveBehavior = this.creation.steering.behaviors[ 0 ];
+		const arriveBehavior = this.owner.steering.behaviors[ 0 ];
 		arriveBehavior.active = false;
-		this.creation.velocity.set( 0, 0, 0 );
+		this.owner.velocity.set( 0, 0, 0 );
 
 		//
 
-		const creation = this.creation;
+		const owner = this.owner;
 
 		//stop bee flying
 
@@ -197,10 +214,9 @@ class SeekToCollectibleGoal extends Goal {
 //now for the final, collect pollen
 class PickUpCollectibleGoal extends Goal {
 
-	constructor( creation ) {
+	constructor( owner ) {
 
-        super();
-        this.creation = creation;
+        super(owner);
         this.REST = 'REST';
         this.GATHER = 'GATHER';
         this.FIND_NEXT = 'FIND NEXT';
@@ -213,8 +229,8 @@ class PickUpCollectibleGoal extends Goal {
         this.LEFT_TURN = 'LEFT_TURN';
         this.IDLE = 'IDLE';
 
-        this.inverseMatrix = new Matrix4();
-        this.localPosition = new Vector3();creation
+        this.inverseMatrix = new YUKA.Matrix4();
+        this.localPosition = new YUKA.Vector3();
 
 		this.collectibleRemoveTimeout = 3; // the time in seconds after a collectible is removed
 
@@ -222,30 +238,30 @@ class PickUpCollectibleGoal extends Goal {
 
 	activate() {
 
-		const creation = this.creation;
+		const owner = this.owner;
 
-		creation.ui.currentSubgoal.textContent = this.PICK_UP;
+		// owner.ui.currentSubgoal.textContent = this.PICK_UP;
 
-		const gather = creation.animations.get( this.GATHER );
-		gather.reset().fadeIn( creation.crossFadeDuration );
+		const gather = owner.animations.get( this.GATHER );
+		gather.reset().fadeIn( owner.crossFadeDuration );
 
 	}
 
 	execute() {
 
-		const creation = this.creation;
-		creation.currentTime += creation.tickDelta;
+		const owner = this.owner;
+		owner.currentTime += owner.tickDelta;
 
-		if ( creation.currentTime >= creation.pickUpDuration ) {
+		if ( owner.currentTime >= owner.pickUpDuration ) {
 
             this.status = Goal.STATUS.COMPLETED;
             
-		} else if ( creation.currentTime >= this.collectibleRemoveTimeout ) {
+		} else if ( owner.currentTime >= this.collectibleRemoveTimeout ) {
 
-			if ( creation.currentTarget !== null ) {
+			if ( owner.currentTarget !== null ) {
 
-				creation.sendMessage( creation.currentTarget, 'PickedUp' );
-				creation.currentTarget = null;
+				owner.sendMessage( owner.currentTarget, 'PickedUp' );
+				owner.currentTarget = null;
 
 			}
 		}
@@ -254,10 +270,10 @@ class PickUpCollectibleGoal extends Goal {
 
 	terminate() {
 
-		const creation = this.creation;
+		const owner = this.owner;
 
-		creation.currentTime = 0;
-		creation.fatigueLevel ++;
+		owner.currentTime = 0;
+		owner.fatigueLevel ++;
 
 		
 

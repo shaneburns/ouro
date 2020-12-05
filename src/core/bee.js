@@ -1,21 +1,24 @@
-import {Vehicle, Think, ArriveBehavior} from './../../node_modules/yuka/build/yuka.module.js'
-import {RestEvaluator} from './restEvaluator'
-import {GatherEvaluator} from './gatherEvaluator'
+import {Vehicle, Think, ArriveBehavior, Vector3} from './../../node_modules/yuka/build/yuka.module.js'
+import {RestEvaluator} from './restEvaluator.js'
+import {GatherEvaluator} from './gatherEvaluator.js'
+
 
 
 
 //Now for the bee class
 export class Bee extends Vehicle{
     constructor(mixer){
-        super()
+		super()
+		
         this.maxTurnRate = Math.PI * 0.5;
 		this.maxSpeed = 1.5;
 
         this.mixer = mixer;
         this.ui = {
-			currentGoal: document.getElementById( 'currentGoal' ),
-			currentSubgoal: document.getElementById( 'currentSubgoal' )
-        };
+			// currentGoal: document.getElementById( 'currentGoal' ),
+			// currentSubgoal: document.getElementById( 'currentSubgoal' )
+		};
+		
         this.brain = new Think( this );
 
 		this.brain.addEvaluator( new RestEvaluator() );
@@ -36,9 +39,12 @@ export class Bee extends Vehicle{
 
 		this.currentTime = 0; // tracks the current time of an action
 		this.deltaTime = 0; // the current time delta value
+		this.position = new Vector3(0, 1, 0)
 
 		this.MAX_FATIGUE = 3; // the girl needs to rest if this amount of fatigue is reached
 
+		console.log(this);
+		console.log(1);
 	}
 
 	update( delta ) {
@@ -51,7 +57,7 @@ export class Bee extends Vehicle{
 
 		this.brain.arbitrate();
 
-		this.mixer.update( delta );
+		//this.mixer.update( delta );
 
 	}
 

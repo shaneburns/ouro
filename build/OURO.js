@@ -835,7 +835,7 @@
 	*
 	* @author {@link https://github.com/Mugen87|Mugen87}
 	*/
-	class Vector3$1 {
+	class Vector3 {
 
 		/**
 		* Constructs a new 3D vector with the given values.
@@ -1512,14 +1512,14 @@
 
 	}
 
-	const v1 = new Vector3$1();
+	const v1 = new Vector3();
 
-	const WorldUp = new Vector3$1( 0, 1, 0 );
+	const WorldUp = new Vector3( 0, 1, 0 );
 
-	const localRight = new Vector3$1();
-	const worldRight = new Vector3$1();
-	const perpWorldUp = new Vector3$1();
-	const temp = new Vector3$1();
+	const localRight = new Vector3();
+	const worldRight = new Vector3();
+	const perpWorldUp = new Vector3();
+	const temp = new Vector3();
 
 	const colVal = [ 2, 2, 1 ];
 	const rowVal = [ 1, 0, 0 ];
@@ -2103,7 +2103,7 @@
 	const m2 = new Matrix3();
 
 	const matrix = new Matrix3();
-	const vector = new Vector3$1();
+	const vector = new Vector3();
 
 	/**
 	* Class representing a quaternion.
@@ -2671,7 +2671,7 @@
 	*
 	* @author {@link https://github.com/Mugen87|Mugen87}
 	*/
-	class Matrix4$1 {
+	class Matrix4 {
 
 		/**
 		* Constructs a new 4x4 identity matrix.
@@ -3216,7 +3216,7 @@
 	}
 
 	const targetRotation = new Quaternion();
-	const targetDirection = new Vector3$1();
+	const targetDirection = new Vector3();
 	const quaternionWorld = new Quaternion();
 
 	/**
@@ -3284,7 +3284,7 @@
 			* The position of this game entity.
 			* @type Vector3
 			*/
-			this.position = new Vector3$1();
+			this.position = new Vector3();
 
 			/**
 			* The rotation of this game entity.
@@ -3296,21 +3296,21 @@
 			* The scaling of this game entity.
 			* @type Vector3
 			*/
-			this.scale = new Vector3$1( 1, 1, 1 );
+			this.scale = new Vector3( 1, 1, 1 );
 
 			/**
 			* The default forward vector of this game entity.
 			* @type Vector3
 			* @default (0,0,1)
 			*/
-			this.forward = new Vector3$1( 0, 0, 1 );
+			this.forward = new Vector3( 0, 0, 1 );
 
 			/**
 			* The default up vector of this game entity.
 			* @type Vector3
 			* @default (0,1,0)
 			*/
-			this.up = new Vector3$1( 0, 1, 0 );
+			this.up = new Vector3( 0, 1, 0 );
 
 			/**
 			* The bounding radius of this game entity in world units.
@@ -3338,7 +3338,7 @@
 			* @type Matrix4
 			* @readonly
 			*/
-			this.worldMatrix = new Matrix4$1();
+			this.worldMatrix = new Matrix4();
 
 			/**
 			* A reference to the entity manager of this game entity.
@@ -3353,14 +3353,14 @@
 
 			// local transformation matrix. no part of the public API due to caching
 
-			this._localMatrix = new Matrix4$1();
+			this._localMatrix = new Matrix4();
 
 			// per-entity cache in order to avoid unnecessary matrix calculations
 
 			this._cache = {
-				position: new Vector3$1(),
+				position: new Vector3(),
 				rotation: new Quaternion(),
-				scale: new Vector3$1( 1, 1, 1 )
+				scale: new Vector3( 1, 1, 1 )
 			};
 
 			// render component
@@ -3800,8 +3800,8 @@
 
 	}
 
-	const displacement = new Vector3$1();
-	const target = new Vector3$1();
+	const displacement = new Vector3();
+	const target = new Vector3();
 
 	/**
 	* Class representing moving game entities.
@@ -3822,7 +3822,7 @@
 			* The velocity of this game entity.
 			* @type Vector3
 			*/
-			this.velocity = new Vector3$1();
+			this.velocity = new Vector3();
 
 			/**
 			* The maximum speed at which this game entity may travel.
@@ -4020,8 +4020,8 @@
 
 	}
 
-	const averageDirection = new Vector3$1();
-	const direction = new Vector3$1();
+	const averageDirection = new Vector3();
+	const direction = new Vector3();
 
 	/**
 	* This steering behavior produces a force that keeps a vehicle’s heading aligned with its neighbors.
@@ -4083,8 +4083,8 @@
 
 	}
 
-	const desiredVelocity = new Vector3$1();
-	const displacement$1 = new Vector3$1();
+	const desiredVelocity = new Vector3();
+	const displacement$1 = new Vector3();
 
 	/**
 	* This steering behavior produces a force that directs an agent toward a target position.
@@ -4102,7 +4102,7 @@
 		* @param {Number} deceleration - The amount of deceleration.
 		* @param {Number} tolerance - A tolerance value in world units to prevent the vehicle from overshooting its target.
 		*/
-		constructor( target = new Vector3$1(), deceleration = 3, tolerance = 0 ) {
+		constructor( target = new Vector3(), deceleration = 3, tolerance = 0 ) {
 
 			super();
 
@@ -4206,7 +4206,7 @@
 
 	}
 
-	const desiredVelocity$1 = new Vector3$1();
+	const desiredVelocity$1 = new Vector3();
 
 	/**
 	* This steering behavior produces a force that directs an agent toward a target position.
@@ -4221,7 +4221,7 @@
 		*
 		* @param {Vector3} target - The target vector.
 		*/
-		constructor( target = new Vector3$1() ) {
+		constructor( target = new Vector3() ) {
 
 			super();
 
@@ -4294,7 +4294,7 @@
 
 	}
 
-	const centerOfMass = new Vector3$1();
+	const centerOfMass = new Vector3();
 
 	/**
 	* This steering produces a steering force that moves a vehicle toward the center of mass of its neighbors.
@@ -4363,7 +4363,7 @@
 
 	}
 
-	const desiredVelocity$2 = new Vector3$1();
+	const desiredVelocity$2 = new Vector3();
 
 	/**
 	* This steering behavior produces a force that steers an agent away from a target position.
@@ -4380,7 +4380,7 @@
 		* @param {Vector3} target - The target vector.
 		* @param {Number} panicDistance - The agent only flees from the target if it is inside this radius.
 		*/
-		constructor( target = new Vector3$1(), panicDistance = 10 ) {
+		constructor( target = new Vector3(), panicDistance = 10 ) {
 
 			super();
 
@@ -4475,9 +4475,9 @@
 
 	}
 
-	const displacement$2 = new Vector3$1();
-	const newPursuerVelocity = new Vector3$1();
-	const predictedPosition = new Vector3$1();
+	const displacement$2 = new Vector3();
+	const newPursuerVelocity = new Vector3();
+	const predictedPosition = new Vector3();
 
 	/**
 	* This steering behavior is is almost the same as {@link PursuitBehavior} except that
@@ -4757,7 +4757,7 @@
 			for ( let i = 0, l = waypointsJSON.length; i < l; i ++ ) {
 
 				const waypointJSON = waypointsJSON[ i ];
-				this._waypoints.push( new Vector3$1().fromArray( waypointJSON ) );
+				this._waypoints.push( new Vector3().fromArray( waypointJSON ) );
 
 			}
 
@@ -4882,10 +4882,10 @@
 
 	}
 
-	const midPoint = new Vector3$1();
-	const translation = new Vector3$1();
-	const predictedPosition1 = new Vector3$1();
-	const predictedPosition2 = new Vector3$1();
+	const midPoint = new Vector3();
+	const translation = new Vector3();
+	const predictedPosition1 = new Vector3();
+	const predictedPosition2 = new Vector3();
 
 	/**
 	* This steering behavior produces a force that moves a vehicle to the midpoint
@@ -5027,19 +5027,19 @@
 
 	}
 
-	const vector$1 = new Vector3$1();
-	const center = new Vector3$1();
-	const size = new Vector3$1();
+	const vector$1 = new Vector3();
+	const center = new Vector3();
+	const size = new Vector3();
 
 	const points = [
-		new Vector3$1(),
-		new Vector3$1(),
-		new Vector3$1(),
-		new Vector3$1(),
-		new Vector3$1(),
-		new Vector3$1(),
-		new Vector3$1(),
-		new Vector3$1()
+		new Vector3(),
+		new Vector3(),
+		new Vector3(),
+		new Vector3(),
+		new Vector3(),
+		new Vector3(),
+		new Vector3(),
+		new Vector3()
 	];
 
 	/**
@@ -5055,7 +5055,7 @@
 		* @param {Vector3} min - The minimum bounds of the AABB.
 		* @param {Vector3} max - The maximum bounds of the AABB.
 		*/
-		constructor( min = new Vector3$1(), max = new Vector3$1() ) {
+		constructor( min = new Vector3(), max = new Vector3() ) {
 
 			/**
 			* The minimum bounds of the AABB.
@@ -5424,7 +5424,7 @@
 		* @param {Vector3} center - The center position of the bounding sphere.
 		* @param {Number} radius - The radius of the bounding sphere.
 		*/
-		constructor( center = new Vector3$1(), radius = 0 ) {
+		constructor( center = new Vector3(), radius = 0 ) {
 
 			/**
 			* The center position of the bounding sphere.
@@ -5641,13 +5641,13 @@
 
 	}
 
-	const v1$1 = new Vector3$1();
-	const edge1 = new Vector3$1();
-	const edge2 = new Vector3$1();
-	const normal = new Vector3$1();
-	const size$1 = new Vector3$1();
-	const matrix$1 = new Matrix4$1();
-	const inverse = new Matrix4$1();
+	const v1$1 = new Vector3();
+	const edge1 = new Vector3();
+	const edge2 = new Vector3();
+	const normal = new Vector3();
+	const size$1 = new Vector3();
+	const matrix$1 = new Matrix4();
+	const inverse = new Matrix4();
 	const aabb$1 = new AABB();
 
 	/**
@@ -5663,7 +5663,7 @@
 		* @param {Vector3} origin - The origin of the ray.
 		* @param {Vector3} direction - The direction of the ray.
 		*/
-		constructor( origin = new Vector3$1(), direction = new Vector3$1() ) {
+		constructor( origin = new Vector3(), direction = new Vector3() ) {
 
 			/**
 			* The origin of the ray.
@@ -5789,7 +5789,7 @@
 		*/
 		intersectsBoundingSphere( sphere ) {
 
-			const v1 = new Vector3$1();
+			const v1 = new Vector3();
 			let squaredDistanceToPoint;
 
 			const directionDistance = v1.subVectors( sphere.center, this.origin ).dot( this.direction );
@@ -6271,13 +6271,13 @@
 
 	const localRay = new Ray();
 
-	const inverse$1 = new Matrix4$1();
-	const localPositionOfObstacle = new Vector3$1();
-	const localPositionOfClosestObstacle = new Vector3$1();
-	const intersectionPoint = new Vector3$1();
+	const inverse$1 = new Matrix4();
+	const localPositionOfObstacle = new Vector3();
+	const localPositionOfClosestObstacle = new Vector3();
+	const intersectionPoint = new Vector3();
 	const boundingSphere = new BoundingSphere();
 
-	const ray = new Ray( new Vector3$1( 0, 0, 0 ), new Vector3$1( 0, 0, 1 ) );
+	const ray = new Ray( new Vector3( 0, 0, 0 ), new Vector3( 0, 0, 1 ) );
 
 	/**
 	* This steering behavior produces a force so a vehicle avoids obstacles lying in its path.
@@ -6488,10 +6488,10 @@
 
 	}
 
-	const offsetWorld = new Vector3$1();
-	const toOffset = new Vector3$1();
-	const newLeaderVelocity = new Vector3$1();
-	const predictedPosition$1 = new Vector3$1();
+	const offsetWorld = new Vector3();
+	const toOffset = new Vector3();
+	const newLeaderVelocity = new Vector3();
+	const predictedPosition$1 = new Vector3();
 
 	/**
 	* This steering behavior produces a force that keeps a vehicle at a specified offset from a leader vehicle.
@@ -6508,7 +6508,7 @@
 		* @param {Vehicle} leader - The leader vehicle.
 		* @param {Vector3} offset - The offset from the leader.
 		*/
-		constructor( leader = null, offset = new Vector3$1() ) {
+		constructor( leader = null, offset = new Vector3() ) {
 
 			super();
 
@@ -6621,11 +6621,11 @@
 
 	}
 
-	const displacement$3 = new Vector3$1();
-	const vehicleDirection = new Vector3$1();
-	const evaderDirection = new Vector3$1();
-	const newEvaderVelocity = new Vector3$1();
-	const predictedPosition$2 = new Vector3$1();
+	const displacement$3 = new Vector3();
+	const vehicleDirection = new Vector3();
+	const evaderDirection = new Vector3();
+	const newEvaderVelocity = new Vector3();
+	const predictedPosition$2 = new Vector3();
 
 	/**
 	* This steering behavior is useful when an agent is required to intercept a moving agent.
@@ -6770,7 +6770,7 @@
 
 	}
 
-	const toAgent = new Vector3$1();
+	const toAgent = new Vector3();
 
 	/**
 	* This steering produces a force that steers a vehicle away from those in its neighborhood region.
@@ -6827,8 +6827,8 @@
 
 	}
 
-	const targetWorld = new Vector3$1();
-	const randomDisplacement = new Vector3$1();
+	const targetWorld = new Vector3();
+	const randomDisplacement = new Vector3();
 
 	/**
 	* This steering behavior produces a steering force that will give the
@@ -6872,7 +6872,7 @@
 			*/
 			this.jitter = jitter;
 
-			this._targetLocal = new Vector3$1();
+			this._targetLocal = new Vector3();
 
 			generateRandomPointOnCircle( this.radius, this._targetLocal );
 
@@ -6977,7 +6977,7 @@
 
 	}
 
-	const force = new Vector3$1();
+	const force = new Vector3();
 
 	/**
 	* This class is responsible for managing the steering of a single vehicle. The steering manager
@@ -7008,7 +7008,7 @@
 			*/
 			this.behaviors = new Array();
 
-			this._steeringForce = new Vector3$1(); // the calculated steering force per simulation step
+			this._steeringForce = new Vector3(); // the calculated steering force per simulation step
 			this._typesMap = new Map(); // used for deserialization of custom behaviors
 
 		}
@@ -7340,7 +7340,7 @@
 
 			for ( let i = 0; i < this.count; i ++ ) {
 
-				this._history[ i ] = new Vector3$1();
+				this._history[ i ] = new Vector3();
 
 			}
 
@@ -7437,7 +7437,7 @@
 			for ( let i = 0, l = historyJSON.length; i < l; i ++ ) {
 
 				const valueJSON = historyJSON[ i ];
-				this._history.push( new Vector3$1().fromArray( valueJSON ) );
+				this._history.push( new Vector3().fromArray( valueJSON ) );
 
 			}
 
@@ -7448,11 +7448,11 @@
 
 	}
 
-	const steeringForce = new Vector3$1();
-	const displacement$4 = new Vector3$1();
-	const acceleration = new Vector3$1();
-	const target$1 = new Vector3$1();
-	const velocitySmooth = new Vector3$1();
+	const steeringForce = new Vector3();
+	const displacement$4 = new Vector3();
+	const acceleration = new Vector3();
+	const target$1 = new Vector3();
+	const velocitySmooth = new Vector3();
 
 	/**
 	* This type of game entity implements a special type of locomotion, the so called
@@ -10066,18 +10066,25 @@
 	const edges = new Array();
 	const contour = new Array();
 
+	//const inversyMatrix = new YUKA.Matrix4()
 	class GatherGoal extends CompositeGoal{
-	    constructor(creation){
-	        super();
-	        this.creation = creation;
-	        this.GATHER = 'GATHER';
+	    constructor(owner){
+	        super(owner);
+			
+			this.GATHER = 'GATHER';
+			
+		//	this.inverseMatrix = new YUKA.Matrix4();
+			this.localPosition = new YUKA.Vector3();
+			
 	    }
 
 	    activate(){
-	        this.ui.currentGoal.textContent = this.GATHER;
-	        this.addSubgoal( new FindNextCollectibleGoal( this.creation ) );
-	        this.addSubgoal( new SeekToCollectibleGoal( this.creation ) );
-			this.addSubgoal( new PickUpCollectibleGoal( this.creation ) );
+			//this.ui.currentGoal.textContent = this.GATHER;
+			console.log('INVERSEmat');
+			//console.log(this.inverseMatrix);
+	        this.addSubgoal( new FindNextCollectibleGoal( this.owner ) );
+	        this.addSubgoal( new SeekToCollectibleGoal( this.owner ) );
+			this.addSubgoal( new PickUpCollectibleGoal( this.owner ) );
 		}
 
 		execute() {
@@ -10093,43 +10100,50 @@
 	//Find next collectible Goal
 	class FindNextCollectibleGoal extends Goal {
 
-		constructor( creation ) {
+		constructor( owner ) {
 
-	        super();
-	        this.creation = creation;
-	        this.FIND_NEXT = 'FIND NEXT';
+			super(owner);
+			
+			this.FIND_NEXT = 'FIND NEXT';
+			console.log('INVERSEmatty');
+			//console.log(inversyMatrix);
 
-	        this.inverseMatrix = new Matrix4();
-	        this.localPosition = new Vector3();
+			this.inverseMatrix = new YUKA.Matrix4();
+			console.log(new YUKA.Matrix4());
+			console.log('///////////////////////');
+	        this.localPosition = new YUKA.Vector3();
 			this.animationId = null;
+			console.log('Owner Constructor');
+			console.log(this.owner);
 
 		}
 
 		activate() {
-
-			const creation = this.creation;
+			const owner = this.owner;
+			console.log('Owner Activation');
+			console.log(owner);
 
 			// update UI
 
-			creation.ui.currentSubgoal.textContent = this.FIND_NEXT;
+			// owner.ui.currentSubgoal.textContent = this.FIND_NEXT;
 
 			// select closest collectible
 
-			const entities = creation.manager.entities;
+			const entities = owner.manager.entities;
 			let minDistance = Infinity;
 
 			for ( let i = 0, l = entities.length; i < l; i ++ ) {
 
 				const entity = entities[ i ];
 
-				if ( entity !== creation ) {
+				if ( entity !== owner ) {
 
-					const squaredDistance = creation.position.squaredDistanceTo( entity.position );
+					const squaredDistance = owner.position.squaredDistanceTo( entity.position );
 
 					if ( squaredDistance < minDistance ) {
 
 						minDistance = squaredDistance;
-						creation.currentTarget = entity;
+						owner.currentTarget = entity;
 
 					}
 
@@ -10139,21 +10153,26 @@
 
 			// determine if the bee should perform a left or right turn in order to face
 			// the collectible
+			console.log(this.localPosition);
 
-			creation.updateWorldMatrix();
-			creation.worldMatrix.getInverse( inverseMatrix );
-			localPosition.copy( creation.currentTarget.position ).applyMatrix4( inverseMatrix );
-			turn.reset().fadeIn( creation.crossFadeDuration );
+			owner.updateWorldMatrix();
+			console.log(owner.worldMatrix);
+			console.log('/////////////');
+			owner.worldMatrix.getInverse(this.inverseMatrix );
+			console.log(this.inverseMatrix);
+			this.localPosition.copy( owner.currentTarget.position ).applyMatrix4( this.inverseMatrix );
+			console.log(this.localPosition);
+			//this.turn.reset().fadeIn( owner.crossFadeDuration );
 
 		}
 
 		execute() {
 
-			const creation = this.creation;
+			const owner = this.owner;
 
-			if ( creation.currentTarget !== null ) {
+			if ( owner.currentTarget !== null ) {
 
-				if ( creation.rotateTo( creation.currentTarget.position, creation.deltaTime ) === true ) {
+				if ( owner.rotateTo( owner.currentTarget.position, owner.deltaTime ) === true ) {
 
 					this.status = Goal.STATUS.COMPLETED;
 
@@ -10168,7 +10187,7 @@
 		}
 
 		terminate() {
-			const creation = this.creation;
+			const owner = this.owner;
 
 	    		
 
@@ -10180,10 +10199,9 @@
 	//Seek the goal
 	class SeekToCollectibleGoal extends Goal {
 
-		constructor( creation ) {
+		constructor( owner ) {
 
-	        super();
-	        this.creation = creation;
+	        super(owner);
 	        
 	        this.SEEK = 'SEEK';
 	        this.PICK_UP = 'PICK UP';
@@ -10194,25 +10212,25 @@
 	        this.LEFT_TURN = 'LEFT_TURN';
 	        this.IDLE = 'IDLE';
 
-	        this.inverseMatrix = new Matrix4();
-	        this.localPosition = new Vector3();
+	        this.inverseMatrix = new YUKA.Matrix4();
+	        this.localPosition = new YUKA.Vector3();
 			
 
 	    }
 	    activate() {
 
-			const creation = this.creation;
+			const owner = this.owner;
 
 			// update UI
 
-			creation.ui.currentSubgoal.textContent = this.SEEK;
+			// owner.ui.currentSubgoal.textContent = this.SEEK;
 
 			//
 
-			if ( creation.currentTarget !== null ) {
+			if ( owner.currentTarget !== null ) {
 
-				const arriveBehavior = creation.steering.behaviors[ 0 ];
-				arriveBehavior.target = creation.currentTarget.position;
+				const arriveBehavior = owner.steering.behaviors[ 0 ];
+				arriveBehavior.target = owner.currentTarget.position;
 				arriveBehavior.active = true;
 
 			} else {
@@ -10229,9 +10247,9 @@
 
 			if ( this.active() ) {
 
-				const creation = this.creation;
+				const owner = this.owner;
 
-				const squaredDistance = creation.position.squaredDistanceTo( creation.currentTarget.position );
+				const squaredDistance = owner.position.squaredDistanceTo( owner.currentTarget.position );
 
 				if ( squaredDistance < 0.25 ) {
 
@@ -10247,13 +10265,13 @@
 
 		terminate() {
 
-			const arriveBehavior = this.creation.steering.behaviors[ 0 ];
+			const arriveBehavior = this.owner.steering.behaviors[ 0 ];
 			arriveBehavior.active = false;
-			this.creation.velocity.set( 0, 0, 0 );
+			this.owner.velocity.set( 0, 0, 0 );
 
 			//
 
-			const creation = this.creation;
+			const owner = this.owner;
 
 			//stop bee flying
 
@@ -10263,10 +10281,9 @@
 	//now for the final, collect pollen
 	class PickUpCollectibleGoal extends Goal {
 
-		constructor( creation ) {
+		constructor( owner ) {
 
-	        super();
-	        this.creation = creation;
+	        super(owner);
 	        this.REST = 'REST';
 	        this.GATHER = 'GATHER';
 	        this.FIND_NEXT = 'FIND NEXT';
@@ -10279,38 +10296,39 @@
 	        this.LEFT_TURN = 'LEFT_TURN';
 	        this.IDLE = 'IDLE';
 
-	        this.inverseMatrix = new Matrix4();
-	        this.localPosition = new Vector3();
+	        this.inverseMatrix = new YUKA.Matrix4();
+	        this.localPosition = new YUKA.Vector3();
+
 			this.collectibleRemoveTimeout = 3; // the time in seconds after a collectible is removed
 
 	    }
 
 		activate() {
 
-			const creation = this.creation;
+			const owner = this.owner;
 
-			creation.ui.currentSubgoal.textContent = this.PICK_UP;
+			// owner.ui.currentSubgoal.textContent = this.PICK_UP;
 
-			const gather = creation.animations.get( this.GATHER );
-			gather.reset().fadeIn( creation.crossFadeDuration );
+			const gather = owner.animations.get( this.GATHER );
+			gather.reset().fadeIn( owner.crossFadeDuration );
 
 		}
 
 		execute() {
 
-			const creation = this.creation;
-			creation.currentTime += creation.tickDelta;
+			const owner = this.owner;
+			owner.currentTime += owner.tickDelta;
 
-			if ( creation.currentTime >= creation.pickUpDuration ) {
+			if ( owner.currentTime >= owner.pickUpDuration ) {
 
 	            this.status = Goal.STATUS.COMPLETED;
 	            
-			} else if ( creation.currentTime >= this.collectibleRemoveTimeout ) {
+			} else if ( owner.currentTime >= this.collectibleRemoveTimeout ) {
 
-				if ( creation.currentTarget !== null ) {
+				if ( owner.currentTarget !== null ) {
 
-					creation.sendMessage( creation.currentTarget, 'PickedUp' );
-					creation.currentTarget = null;
+					owner.sendMessage( owner.currentTarget, 'PickedUp' );
+					owner.currentTarget = null;
 
 				}
 			}
@@ -10319,10 +10337,10 @@
 
 		terminate() {
 
-			const creation = this.creation;
+			const owner = this.owner;
 
-			creation.currentTime = 0;
-			creation.fatigueLevel ++;
+			owner.currentTime = 0;
+			owner.fatigueLevel ++;
 
 			
 
@@ -10345,6 +10363,7 @@
 			if ( ( currentSubgoal instanceof GatherGoal ) === false ) {
 
 				bee.brain.clearSubgoals();
+				
 
 				bee.brain.addSubgoal( new GatherGoal( bee ) );
 
@@ -10356,9 +10375,9 @@
 
 	class RestGoal extends Goal{
 	    
-	    constructor(creation){
-	        super();
-	        this.creation = creation;
+	    constructor(owner){
+	        super(owner);
+	        
 	        this.REST = 'REST';
 	        
 	        this.PLACEHOLDER = '-';
@@ -10367,14 +10386,14 @@
 
 	    //Activate
 	    activate() {
-	        this.creation.ui.currentGoal.textContent = this.REST;
-	        this.creation.ui.currentSubgoal.textContent = this.PLACEHOLDER;
+	        // this.owner.ui.currentGoal.textContent = this.REST;
+	        // this.owner.ui.currentSubgoal.textContent = this.PLACEHOLDER;
 	    }
 
 	    //Execute
 	    execute() {
-	        this.creation.currentTime += this.creation.tickDelta;
-	        if (this.creation.currentTime >= this.creation.restDuration){
+	        this.owner.currentTime += this.owner.tickDelta;
+	        if (this.owner.currentTime >= this.owner.restDuration){
 	            this.status = Goal.STATUS.COMPLETED;
 	        }
 
@@ -10382,7 +10401,7 @@
 
 	    //Terminate
 	    terminate() {
-	        this.creation.currentTime = 0;
+	        this.owner.currentTime = 0;
 	        this.fatigueLevel = 0;
 	    }
 	}
@@ -10411,15 +10430,17 @@
 	//Now for the bee class
 	class Bee extends Vehicle{
 	    constructor(mixer){
-	        super();
+			super();
+			
 	        this.maxTurnRate = Math.PI * 0.5;
 			this.maxSpeed = 1.5;
 
 	        this.mixer = mixer;
 	        this.ui = {
-				currentGoal: document.getElementById( 'currentGoal' ),
-				currentSubgoal: document.getElementById( 'currentSubgoal' )
-	        };
+				// currentGoal: document.getElementById( 'currentGoal' ),
+				// currentSubgoal: document.getElementById( 'currentSubgoal' )
+			};
+			
 	        this.brain = new Think( this );
 
 			this.brain.addEvaluator( new RestEvaluator() );
@@ -10440,9 +10461,12 @@
 
 			this.currentTime = 0; // tracks the current time of an action
 			this.deltaTime = 0; // the current time delta value
+			this.position = new Vector3(0, 1, 0);
 
 			this.MAX_FATIGUE = 3; // the girl needs to rest if this amount of fatigue is reached
 
+			console.log(this);
+			console.log(1);
 		}
 
 		update( delta ) {
@@ -10455,7 +10479,7 @@
 
 			this.brain.arbitrate();
 
-			this.mixer.update( delta );
+			//this.mixer.update( delta );
 
 		}
 
@@ -10476,6 +10500,11 @@
 
 			if ( this.position.x < 1 && this.position.x > - 1 ) this.position.x += 1;
 			if ( this.position.z < 1 && this.position.y > - 1 ) this.position.z += 1;
+
+			//this.Collectible = new Vehicle()
+
+
+
 
 		}
 
