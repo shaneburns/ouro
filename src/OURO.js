@@ -14,3 +14,11 @@ export { Character } from './core/character.js';
 export { Controls } from './core/controls.js';
 export { Enemy } from './core/enemy.js';
 export { Utils } from './utils/utils.js'
+export { GatherGoal } from './core/gatherGoal.js'
+export { GatherEvaluator } from './core/gatherEvaluator.js'
+export { RestGoal } from './core/restGoal.js'
+export { RestEvaluator } from './core/restEvaluator.js'
+export { Bee } from './core/bee'
+export { Collectible } from './core/collectible.js'
+
+
