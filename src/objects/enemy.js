@@ -1,6 +1,6 @@
-import {ObjectBase} from './objectBase.js'
-import {Controls} from './controls.js'
-import { CoreSphere } from './../objs/coreSphere.js'
+import { ObjectBase } from './objectBase.js'
+import { Controls } from './../controls/controls.js'
+import { CoreSphere } from './coreSphere.js'
 
 export class Enemy extends ObjectBase{
     constructor(creation, camera, settings = {

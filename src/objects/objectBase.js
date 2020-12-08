@@ -1,5 +1,3 @@
-//import * as CANNON from './../../node_modules/cannon/build/cannon.js'
-
 export class ObjectBase {
     constructor(creation, settings = {}){
         this.creation = creation

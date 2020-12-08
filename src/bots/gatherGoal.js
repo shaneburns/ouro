@@ -1,6 +1,4 @@
-import { CompositeGoal, Goal }from './../../node_modules/yuka/build/yuka.module.js'
-//const inversyMatrix = new YUKA.Matrix4()
-export class GatherGoal extends CompositeGoal{
+export class GatherGoal extends YUKA.CompositeGoal{
     constructor(owner){
         super(owner)
 		
@@ -31,7 +29,7 @@ export class GatherGoal extends CompositeGoal{
 }
 
 //Find next collectible Goal
-class FindNextCollectibleGoal extends Goal {
+export class FindNextCollectibleGoal extends YUKA.Goal {
 
 	constructor( owner ) {
 
@@ -108,13 +106,13 @@ class FindNextCollectibleGoal extends Goal {
 
 			if ( owner.rotateTo( owner.currentTarget.position, owner.deltaTime ) === true ) {
 
-				this.status = Goal.STATUS.COMPLETED;
+				this.status = YUKA.Goal.STATUS.COMPLETED;
 
 			}
 
 		} else {
 
-			this.status = Goal.STATUS.FAILED;
+			this.status = YUKA.Goal.STATUS.FAILED;
 
 		}
 		console.log("Find Next Collectible Executed");
@@ -133,7 +131,7 @@ class FindNextCollectibleGoal extends Goal {
 
 //
 //Seek the goal
-class SeekToCollectibleGoal extends Goal {
+export class SeekToCollectibleGoal extends YUKA.Goal {
 
 	constructor( owner ) {
 
@@ -173,7 +171,7 @@ class SeekToCollectibleGoal extends Goal {
 
 		} else {
 
-			this.status = Goal.STATUS.FAILED;
+			this.status = YUKA.Goal.STATUS.FAILED;
 
 		}
 
@@ -194,7 +192,7 @@ class SeekToCollectibleGoal extends Goal {
 
 			if ( squaredDistance < 0.25 ) {
 
-				this.status = Goal.STATUS.COMPLETED;
+				this.status = YUKA.Goal.STATUS.COMPLETED;
 
 			}
 
@@ -223,7 +221,7 @@ class SeekToCollectibleGoal extends Goal {
 
 }
 //now for the final, collect pollen
-class PickUpCollectibleGoal extends Goal {
+export class PickUpCollectibleGoal extends YUKA.Goal {
 
 	constructor( owner ) {
 
@@ -276,7 +274,7 @@ class PickUpCollectibleGoal extends Goal {
 
 		if ( owner.currentTime >= owner.pickUpDuration ) {
 
-			this.status = Goal.STATUS.COMPLETED;
+			this.status = YUKA.Goal.STATUS.COMPLETED;
             
 		} else if ( owner.currentTime >= this.collectibleRemoveTimeout ) {
 			

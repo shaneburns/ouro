@@ -1,6 +1,4 @@
-import {GameEntity, Vehicle} from './../../node_modules/yuka/build/yuka.module.js'
-
-export class Collectible extends GameEntity {
+export class Collectible extends YUKA.GameEntity {
 
 	spawn() {
 

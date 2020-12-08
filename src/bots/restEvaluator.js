@@ -1,7 +1,6 @@
-import {GoalEvaluator}from './../../node_modules/yuka/build/yuka.module.js'
-import {RestGoal} from './restGoal.js'
+import { RestGoal } from './restGoal.js';
 
-export class RestEvaluator extends GoalEvaluator{
+export class RestEvaluator extends YUKA.GoalEvaluator{
 
     calculateDesirability( bee ) {
         console.log("calculating Rest desirability ");

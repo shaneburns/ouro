@@ -1,4 +1,4 @@
-import {ObjectBase} from './../core/objectBase.js'
+import {ObjectBase} from './objectBase.js'
 
 export class BasicSphere extends ObjectBase{
     constructor(creation, settings = {

@@ -1,12 +1,11 @@
-import {Vehicle, Think, ArriveBehavior, Vector3} from './../../node_modules/yuka/build/yuka.module.js'
-import {RestEvaluator} from './restEvaluator.js'
-import {GatherEvaluator} from './gatherEvaluator.js'
+import { RestEvaluator } from './restEvaluator.js'
+import { GatherEvaluator } from './gatherEvaluator.js'
 
 
 
 
 //Now for the bee class
-export class Bee extends Vehicle{
+export class Bee extends YUKA.Vehicle{
     constructor(mixer){
 		super()
 		
@@ -19,13 +18,13 @@ export class Bee extends Vehicle{
 			// currentSubgoal: document.getElementById( 'currentSubgoal' )
 		};
 		
-        this.brain = new Think( this );
+        this.brain = new YUKA.Think( this );
 
 		this.brain.addEvaluator( new RestEvaluator() );
         this.brain.addEvaluator( new GatherEvaluator() );
         // steering
 
-		const arriveBehavior = new ArriveBehavior();
+		const arriveBehavior = new YUKA.ArriveBehavior();
 		arriveBehavior.deceleration = 1.5;
 		this.steering.add( arriveBehavior );
 

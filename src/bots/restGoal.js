@@ -1,6 +1,4 @@
-import {Goal} from './../../node_modules/yuka/build/yuka.module.js'
-
-export class RestGoal extends Goal{
+export class RestGoal extends YUKA.Goal{
     
     constructor(owner){
         super(owner)
@@ -28,7 +26,7 @@ export class RestGoal extends Goal{
         console.log("current time = "+owner.currentTime);
         console.log("rest duration = "+owner.restDuration);
         if (owner.currentTime >= owner.restDuration){
-            this.status = Goal.STATUS.COMPLETED;
+            this.status = YUKA.Goal.STATUS.COMPLETED;
             console.log("REST GOAL COMPLETED = "+ this.status);
         }
         console.log("RestGoal executed");

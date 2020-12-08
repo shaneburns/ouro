@@ -1,5 +1,5 @@
 import {ObjectBase} from './objectBase.js'
-import {Controls} from './controls.js'
+import {Controls} from './../controls/controls.js'
 export class Character extends ObjectBase{
     constructor(creation, camera, settings = {
         body: new CANNON.Body({shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), mass: 5}),
