@@ -85,7 +85,7 @@
 	        this.canvas = settings.canvasId ? document.querySelector("#" + settings.canvasId) : document.body;
 	        this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
 	        this.renderer.shadowMap.enabled = settings.shadowMapEnabled ? settings.shadowMapEnabled : true;
-	        if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.BasicShadowMap;
+	        if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.PCFShadowMap;
 	        this.renderer.setPixelRatio( window.devicePixelRatio );
 	        //renderer.setSize( window.innerWidth, window.innerHeight );
 	        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -411,7 +411,7 @@
 
 	        this.model = settings.model;
 	        this.mesh.add(this.model);
-	        this.model.position.x = .35;
+	        this.model.position.x = .35; // offset x axis to match this.body position 
 	        this.texture = settings.texture.dispose();
 	        this.complexity = settings.complexity;
 	        this.timeScale = settings.timeScale;

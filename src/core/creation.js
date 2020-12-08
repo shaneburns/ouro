@@ -12,7 +12,7 @@ class Creation {
         this.canvas = settings.canvasId ? document.querySelector("#" + settings.canvasId) : document.body;
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
         this.renderer.shadowMap.enabled = settings.shadowMapEnabled ? settings.shadowMapEnabled : true;
-        if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.BasicShadowMap;
+        if(this.renderer.shadowMap.enabled) this.renderer.shadowMap.type = THREE.PCFShadowMap;
         this.renderer.setPixelRatio( window.devicePixelRatio );
         //renderer.setSize( window.innerWidth, window.innerHeight );
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
