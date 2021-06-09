@@ -1,3 +1,4 @@
+export { BaseControls } from './controls/baseControls.js';
 export { BasicCube } from './objects/basicCube.js';
 export { BasicSphere} from './objects/basicSphere.js';
 export { BasicTorus } from './objects/basicTorus.js';

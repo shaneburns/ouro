@@ -1,17 +1,11 @@
-export class Controls {
+import { BaseControls } from "./baseControls"
+// PointerLockControls
+export class Controls extends BaseControls{
     
     constructor(creation, camera, target){
-        this.creation = creation
+        super(creation)
         this.camera = camera
         this.target = target
-        this.forward = false
-        this.left = false
-        this.right = false
-        this.backward = false
-        this.jump = false
-        this.canJump = true
-        this.isJumping = false
-        this.f = new THREE.Vector3()
         this.keypressed = null
         this.keyreleased = null
         this.mousemove = null
@@ -41,37 +35,37 @@ export class Controls {
             this.keyPressed = (e)=>{
                 switch(e.keyCode){
                     case 87:
-                        this.forward = true
+                        this.goForward(true)
                         break
                     case 65:
-                        this.left = true
+                        this.goLeft(true)
                         break
                     case 83:
-                        this.backward = true
+                        this.goBackward(true)
                         break
                     case 68:
-                        this.right = true
+                        this.goRight(true)
                         break;
                     case 32:
-                        this.jump = true;
+                        this.jumpUp(true)
                         break;}};
 
             this.keyReleased = (e)=>{
                 switch(e.keyCode){
                     case 87:
-                        this.forward = false
+                        this.goForward(false)
                         break
                     case 65:
-                        this.left = false
+                        this.goLeft(false)
                         break
                     case 83:
-                        this.backward = false
+                        this.goBackward(false)
                         break
                     case 68:
-                        this.right = false
+                        this.goRight(false)
                         break;
                     case 32:
-                        this.jump = false;
+                        this.jumpUp(false)
                         break;}};
 
             // Hook pointer lock state change events
@@ -97,35 +91,11 @@ export class Controls {
         } else {
 
             //instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-
+            //this.creation.throwError('Your browser doesn\'t seem to support Pointer Lock API')
         }
     }
-    getForce(){
-        this.f.multiplyScalar(0)
-        // directional forces
-        if(this.forward) this.f.z-=1;
-        if(this.backward) this.f.z+=1;
-        if(this.left) this.f.x-=1;
-        if(this.right) this.f.x+=1;
-
-        // Apply local rotation according to camera
+    applyDirection(){
         this.f.applyQuaternion(this.camera.quaternion);
-        this.f.y = 0;// reset y for jump only
-        // jump force
-        if(this.jump) {
-            if (!this.isJumping && this.canJump){
-                this.isJumping = true
-                setTimeout(()=>{
-                    this.canJump = false
-                    setTimeout(()=>{
-                        this.canJump = true
-                        this.isJumping = false
-                    }, 1000)
-                }, 200)
-            }
-            if(this.isJumping && this.canJump) this.f.y+=5
-        }
-        return this.f
     }
     update(){
         this.pointerLock.updateTimeElapsed(this.creation.tickDelta)

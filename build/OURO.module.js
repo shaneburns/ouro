@@ -1,16 +1,90 @@
+class BaseControls {
+    
+    constructor(creation, settings = {}){
+        this.creation = creation;
+        this.target = settings.target ?? null;
+        this.forward = false;
+        this.left = false;
+        this.right = false;
+        this.backward = false;
+        this.jump = false;
+        this.canJump = settings.canJump ?? true;
+        this.isJumping = false;
+        this.f = new THREE.Vector3();
+        // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
+    }
+    goForward(impulse){
+        this.forward = impulse;
+    }
+    goBackward(impulse){
+        this.backward = impulse;
+    }
+    goLeft(impulse){
+        this.left = impulse;
+    }
+    goRight(impulse){
+        this.right = impulse;
+    }
+    jumpUp(impulse){
+        this.jump = impulse;
+    }
+    applyDirection(){
+        this.target ? this.f.applyQuaternion(this.target.quaternion) : console.log('no target to quatern');
+    }
+    applyJumpForce(){
+        if(this.jump) {
+            if (!this.isJumping && this.canJump){
+                this.isJumping = true;
+                setTimeout(()=>{
+                    this.canJump = false;
+                    setTimeout(()=>{
+                        this.canJump = true;
+                        this.isJumping = false;
+                    }, 1000);
+                }, 200);
+            }
+            if(this.isJumping && this.canJump) this.f.y+=5;
+        }
+    }
+    getForce(){
+        this.f.multiplyScalar(0);
+        // directional forces
+        if(this.forward) this.f.z-=1;
+        if(this.backward) this.f.z+=1;
+        if(this.left) this.f.x-=1;
+        if(this.right) this.f.x+=1;
+
+        // Apply local rotation according to camera
+        this.applyDirection();
+        this.f.y = 0;// reset y for jump only
+        // jump force
+        this.applyJumpForce();
+        return this.f
+    }
+}
+
 class ObjectBase {
     constructor(creation, settings = {}){
         this.creation = creation;
+        this.loaded = false;
         this.mtl = settings.mtl ?? null;
         this.geo = settings.geo ?? null;
-        this.mesh = settings.mesh ?? new THREE.Mesh(this.geo, this.mtl);
+        this.mesh = settings.mesh ?? ((this.mtl !== null && this.geo !== null) ? new THREE.Mesh(this.geo, this.mtl) : null);
         this.body = settings.body ?? new CANNON.Body({mass: settings.mass ?? 1, shape: settings.shape ?? null});
-        
-        
+        this.animations = settings.animations ?? null;
+        this.mixer = null;
+    }
+    setMixer(){
+        this.mixer = new THREE.AnimationMixer(this.mesh);
+        this.animations.forEach((clip) => {this.mixer.clipAction(clip).play(); });
+        this.mixer.setTime(Math.random()*60);
+        this.loaded = true;
     }
     updatePosition(){
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
+
+        if(this.loaded) this.mixer.update(this.creation.tickDelta);
     }
 
 }
@@ -237,9 +311,6 @@ class FindNextCollectibleGoal extends YUKA.Goal {
 	terminate() {
 		const owner = this.owner;
 		console.log("Find Next Collectible Terminated");
-
-    		
-
 	}
 
 }
@@ -518,20 +589,13 @@ class Bee extends YUKA.Vehicle{
 
 }
 
-class Controls {
+// PointerLockControls
+class Controls extends BaseControls{
     
     constructor(creation, camera, target){
-        this.creation = creation;
+        super(creation);
         this.camera = camera;
         this.target = target;
-        this.forward = false;
-        this.left = false;
-        this.right = false;
-        this.backward = false;
-        this.jump = false;
-        this.canJump = true;
-        this.isJumping = false;
-        this.f = new THREE.Vector3();
         this.keypressed = null;
         this.keyreleased = null;
         this.mousemove = null;
@@ -561,37 +625,37 @@ class Controls {
             this.keyPressed = (e)=>{
                 switch(e.keyCode){
                     case 87:
-                        this.forward = true;
+                        this.goForward(true);
                         break
                     case 65:
-                        this.left = true;
+                        this.goLeft(true);
                         break
                     case 83:
-                        this.backward = true;
+                        this.goBackward(true);
                         break
                     case 68:
-                        this.right = true;
+                        this.goRight(true);
                         break;
                     case 32:
-                        this.jump = true;
+                        this.jumpUp(true);
                         break;}};
 
             this.keyReleased = (e)=>{
                 switch(e.keyCode){
                     case 87:
-                        this.forward = false;
+                        this.goForward(false);
                         break
                     case 65:
-                        this.left = false;
+                        this.goLeft(false);
                         break
                     case 83:
-                        this.backward = false;
+                        this.goBackward(false);
                         break
                     case 68:
-                        this.right = false;
+                        this.goRight(false);
                         break;
                     case 32:
-                        this.jump = false;
+                        this.jumpUp(false);
                         break;}};
 
             // Hook pointer lock state change events
@@ -616,32 +680,8 @@ class Controls {
 
         }
     }
-    getForce(){
-        this.f.multiplyScalar(0);
-        // directional forces
-        if(this.forward) this.f.z-=1;
-        if(this.backward) this.f.z+=1;
-        if(this.left) this.f.x-=1;
-        if(this.right) this.f.x+=1;
-
-        // Apply local rotation according to camera
+    applyDirection(){
         this.f.applyQuaternion(this.camera.quaternion);
-        this.f.y = 0;// reset y for jump only
-        // jump force
-        if(this.jump) {
-            if (!this.isJumping && this.canJump){
-                this.isJumping = true;
-                setTimeout(()=>{
-                    this.canJump = false;
-                    setTimeout(()=>{
-                        this.canJump = true;
-                        this.isJumping = false;
-                    }, 1000);
-                }, 200);
-            }
-            if(this.isJumping && this.canJump) this.f.y+=5;
-        }
-        return this.f
     }
     update(){
         this.pointerLock.updateTimeElapsed(this.creation.tickDelta);
@@ -1175,4 +1215,4 @@ class Utils{
     }
 }
 
-export { BasicCube, BasicSphere, BasicTorus, Bee, Character, Collectible, Controls, CoreSphere, Creation, Enemy, EpisodeManager, EpisodeSkeleton, FindNextCollectibleGoal, GatherEvaluator, GatherGoal, MenuManager, ObjectBase, PickUpCollectibleGoal, PlayableScene, RestEvaluator, RestGoal, SceneManager, SceneSkeleton, SeekToCollectibleGoal, Utils };
+export { BaseControls, BasicCube, BasicSphere, BasicTorus, Bee, Character, Collectible, Controls, CoreSphere, Creation, Enemy, EpisodeManager, EpisodeSkeleton, FindNextCollectibleGoal, GatherEvaluator, GatherGoal, MenuManager, ObjectBase, PickUpCollectibleGoal, PlayableScene, RestEvaluator, RestGoal, SceneManager, SceneSkeleton, SeekToCollectibleGoal, Utils };

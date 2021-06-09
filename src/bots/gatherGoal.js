@@ -122,9 +122,6 @@ export class FindNextCollectibleGoal extends YUKA.Goal {
 	terminate() {
 		const owner = this.owner;
 		console.log("Find Next Collectible Terminated");
-
-    		
-
 	}
 
 }
